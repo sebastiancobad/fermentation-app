@@ -9,7 +9,7 @@ import PracticalExercises from './components/PracticalExercises'
 import References from './components/References'
 
 const TABS = [
-  { id: 'dashboard',    label: 'Introducción',      short: 'Intro'    },
+  { id: 'dashboard',    label: 'Introducción',       short: 'Intro'    },
   { id: 'growth',       label: 'Curva de Crecimiento', short: 'Crecim.' },
   { id: 'calculator',   label: 'Calculadora Cinética', short: 'Calc.'  },
   { id: 'monod',        label: 'Modelo de Monod',    short: 'Monod'    },
@@ -34,39 +34,39 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
-      {/* ─── Header ─── */}
-      <header className="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-green-700 flex items-center justify-center text-white font-bold text-sm">
+    <div className="min-h-screen bg-[#fafcfb] text-[#879186] font-sans selection:bg-[#E6F7ED]">
+      {/* ─── Header Estilo Glassmorphism Corporativo ─── */}
+      <header className="bg-white/80 backdrop-blur-md border-b border-[#E6F7ED] sticky top-0 z-50 shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
+        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="w-11 h-11 rounded-2xl bg-[#E6F7ED] flex items-center justify-center text-[#2c3b33] font-extrabold text-sm shadow-inner border border-white">
               FB
             </div>
             <div>
-              <h1 className="text-sm font-bold text-emerald-400 leading-tight">
+              <h1 className="text-xl font-extrabold text-[#1a2620] tracking-tight leading-tight">
                 Fermentación & Cinética Microbiana
               </h1>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm text-[#879186] font-medium mt-0.5">
                 Dr. Sebastián Coba Daza · Ingeniería de Bioprocesos 2024
               </p>
             </div>
           </div>
-          <span className="hidden sm:block text-xs text-slate-600 font-mono">
+          <span className="hidden md:inline-flex items-center px-3 py-1 rounded-full bg-[#E6F7ED]/50 text-[#879186] text-xs font-semibold tracking-wide border border-[#E6F7ED]">
             v1.0 · Herramienta Educativa
           </span>
         </div>
 
-        {/* ─── Navigation Tabs ─── */}
-        <nav className="max-w-7xl mx-auto px-4 overflow-x-auto">
-          <ul className="flex gap-0 min-w-max">
+        {/* ─── Navigation Tabs Estilo "Píldora" ─── */}
+        <nav className="max-w-7xl mx-auto px-6 pb-4 overflow-x-auto hide-scrollbar">
+          <ul className="flex gap-2 min-w-max bg-[#E6F7ED]/30 p-1.5 rounded-full border border-[#E6F7ED]/50 w-fit">
             {TABS.map(tab => (
               <li key={tab.id}>
                 <button
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium transition-all duration-150 border-b-2 whitespace-nowrap
+                  className={`px-5 py-2.5 text-sm font-bold transition-all duration-300 rounded-full whitespace-nowrap
                     ${activeTab === tab.id
-                      ? 'border-emerald-500 text-emerald-400'
-                      : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-600'
+                      ? 'bg-white text-[#1a2620] shadow-sm ring-1 ring-[#E6F7ED]'
+                      : 'bg-transparent text-[#879186] hover:text-[#2c3b33] hover:bg-[#E6F7ED]/60'
                     }`}
                 >
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -79,17 +79,19 @@ export default function App() {
       </header>
 
       {/* ─── Main Content ─── */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {COMPONENTS[activeTab]}
+      <main className="max-w-7xl mx-auto px-6 py-10 animate-in fade-in duration-500">
+        <div className="bg-white rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-[#E6F7ED]/80 p-6 sm:p-10">
+          {COMPONENTS[activeTab]}
+        </div>
       </main>
 
-      {/* ─── Footer ─── */}
-      <footer className="border-t border-slate-800 bg-slate-950 mt-12 py-6 text-center">
-        <p className="text-slate-500 text-xs">
+      {/* ─── Footer Minimalista ─── */}
+      <footer className="border-t border-[#E6F7ED] bg-white mt-8 py-8 text-center">
+        <p className="text-[#879186] text-sm">
           Aplicación educativa basada en el programa de{' '}
-          <span className="text-emerald-500 font-medium">Ingeniería de Bioprocesos (2024)</span>
+          <span className="text-[#2c3b33] font-bold">Ingeniería de Bioprocesos (2024)</span>
           {' '}· Dr. Sebastián Coba Daza ·{' '}
-          <span className="text-slate-600">Uso exclusivamente académico</span>
+          <span className="text-[#879186] opacity-80">Uso exclusivamente académico</span>
         </p>
       </footer>
     </div>
