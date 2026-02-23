@@ -8,7 +8,7 @@ const EXERCISES = [
     title: 'Cálculo de μx y td a partir de datos experimentales',
     category: 'Cinética de crecimiento',
     difficulty: 'Básico',
-    diffColor: '#22c55e',
+    diffColor: '#4A6741',
     icon: '📊',
     topic: 'Fase exponencial, tasa de crecimiento específico, tiempo de duplicación',
     statement: `Un cultivo de Escherichia coli en medio mínimo con glucosa (37°C, pH 7.0) presenta los siguientes datos durante la fase exponencial:
@@ -94,7 +94,7 @@ Determine:
     title: 'Coeficiente de rendimiento Yx/s y balance de carbono',
     category: 'Estequiometría del crecimiento',
     difficulty: 'Intermedio',
-    diffColor: '#f59e0b',
+    diffColor: '#B45309',
     icon: '⚗️',
     topic: 'Rendimiento biomasa/sustrato, balance de masa, respiración aeróbica',
     statement: `Un cultivo aeróbico de Saccharomyces cerevisiae con glucosa como única fuente de carbono y energía presenta los siguientes datos al inicio y final de la fase exponencial:
@@ -108,11 +108,11 @@ Determine:
   c) La tasa específica de consumo de sustrato (qs) en g glucosa / (g biomasa · h)
   d) Si se asume fórmula empírica de célula CH₁.₈O₀.₅N₀.₂, verificar el balance de carbono`,
     data: [
-      { symbol: 'X₀', value: '0.20 g/L' },
-      { symbol: 'S₀', value: '10.0 g/L' },
+      { symbol: 'X₀',      value: '0.20 g/L' },
+      { symbol: 'S₀',      value: '10.0 g/L' },
       { symbol: 'X final', value: '2.00 g/L' },
-      { symbol: 'S final', value: '1.0 g/L' },
-      { symbol: 'Δt', value: '8 h' },
+      { symbol: 'S final', value: '1.0 g/L'  },
+      { symbol: 'Δt',      value: '8 h'       },
     ],
     solution: [
       {
@@ -203,7 +203,7 @@ Determine:
     title: 'Estimación de parámetros del modelo de Monod y diseño Fed-Batch',
     category: 'Modelo de Monod + Diseño de proceso',
     difficulty: 'Avanzado',
-    diffColor: '#ef4444',
+    diffColor: '#DC2626',
     icon: '🔬',
     topic: 'Monod, Ks, μmax, diseño de perfil de alimentación fed-batch',
     statement: `Un microorganismo crece en glucosa con los siguientes datos de la fase exponencial a diferentes concentraciones iniciales de sustrato en cultivos batch separados:
@@ -315,7 +315,6 @@ export default function PracticalExercises() {
   const toggleShowAll = (exId) => {
     setShowAll(prev => ({ ...prev, [exId]: !prev[exId] }))
     if (!showAll[exId]) {
-      // expand all parts
       const ex = EXERCISES.find(e => e.id === exId)
       if (ex) {
         const newParts = {}
@@ -343,8 +342,8 @@ export default function PracticalExercises() {
             onClick={() => { setActiveEx(i); setExpandedParts({}); setShowAll({}) }}
             className={`text-left p-4 rounded-xl border transition-all ${
               activeEx === i
-                ? 'border-emerald-500/60 bg-emerald-500/10'
-                : 'border-slate-700 bg-slate-800 hover:border-slate-600'
+                ? 'border-sage-700/50 bg-sage-700/5'
+                : 'border-sage-200 bg-white hover:border-sage-400'
             }`}
           >
             <div className="flex items-start gap-2 mb-2">
@@ -352,46 +351,46 @@ export default function PracticalExercises() {
               <div>
                 <span
                   className="text-xs px-2 py-0.5 rounded-full font-medium"
-                  style={{ color: e.diffColor, backgroundColor: `${e.diffColor}22`, border: `1px solid ${e.diffColor}44` }}
+                  style={{ color: e.diffColor, backgroundColor: `${e.diffColor}15`, border: `1px solid ${e.diffColor}33` }}
                 >
                   {e.difficulty}
                 </span>
               </div>
             </div>
-            <h3 className={`text-sm font-bold leading-snug mt-2 ${activeEx === i ? 'text-emerald-300' : 'text-white'}`}>
+            <h3 className={`text-sm font-bold leading-snug mt-2 ${activeEx === i ? 'text-sage-800' : 'text-sage-700'}`}>
               Ej. {e.id}: {e.title}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">{e.category}</p>
+            <p className="text-xs text-sage-400 mt-1">{e.category}</p>
           </button>
         ))}
       </div>
 
       {/* Active exercise */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <div className="bg-white rounded-xl border border-sage-200 overflow-hidden">
         {/* Header */}
-        <div className="bg-slate-900 p-5 border-b border-slate-700">
+        <div className="bg-sage-50 p-5 border-b border-sage-200">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
               <span className="text-3xl">{ex.icon}</span>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-mono text-slate-500">EJERCICIO {ex.id}</span>
+                  <span className="text-xs font-mono text-sage-400">EJERCICIO {ex.id}</span>
                   <span
                     className="text-xs px-2 py-0.5 rounded-full"
-                    style={{ color: ex.diffColor, backgroundColor: `${ex.diffColor}22`, border: `1px solid ${ex.diffColor}44` }}
+                    style={{ color: ex.diffColor, backgroundColor: `${ex.diffColor}15`, border: `1px solid ${ex.diffColor}33` }}
                   >
                     {ex.difficulty}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-white">{ex.title}</h3>
-                <p className="text-xs text-slate-400 mt-1">
+                <h3 className="text-lg font-bold text-sage-900">{ex.title}</h3>
+                <p className="text-xs text-sage-400 mt-1">
                   📚 {ex.category} · {ex.topic}
                 </p>
               </div>
             </div>
             <button
               onClick={() => toggleShowAll(ex.id)}
-              className="flex-shrink-0 px-4 py-2 text-xs font-medium rounded-lg border border-emerald-500/40 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 transition-all"
+              className="flex-shrink-0 px-4 py-2 text-xs font-medium rounded-lg border border-sage-700/30 text-sage-700 bg-sage-700/5 hover:bg-sage-700/10 transition-all"
             >
               {showAll[ex.id] ? 'Colapsar todo' : 'Ver solución completa'}
             </button>
@@ -399,29 +398,29 @@ export default function PracticalExercises() {
         </div>
 
         {/* Statement */}
-        <div className="p-5 border-b border-slate-700">
+        <div className="p-5 border-b border-sage-200">
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 text-xs font-bold">P</span>
-            <span className="text-sm font-semibold text-slate-300">Planteamiento del problema</span>
+            <span className="w-6 h-6 rounded-full bg-sage-200 flex items-center justify-center text-sage-700 text-xs font-bold">P</span>
+            <span className="text-sm font-semibold text-sage-700">Planteamiento del problema</span>
           </div>
-          <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
-            <pre className="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed font-sans">
+          <div className="bg-sage-50 rounded-xl p-5 border border-sage-200">
+            <pre className="text-sm text-sage-700 whitespace-pre-wrap leading-relaxed font-sans">
               {ex.statement}
             </pre>
           </div>
 
           {/* Given data */}
           <div className="mt-4">
-            <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Datos proporcionados</p>
+            <p className="text-xs font-semibold text-sage-400 uppercase mb-2">Datos proporcionados</p>
             <div className="flex flex-wrap gap-2">
               {ex.data.map(d => (
                 <div
                   key={d.symbol}
-                  className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs"
+                  className="bg-sage-50 border border-sage-200 rounded-lg px-3 py-2 text-xs"
                 >
-                  <span className="text-emerald-400 font-mono font-semibold">{d.symbol}</span>
-                  <span className="text-slate-400 mx-1">=</span>
-                  <span className="text-cyan-300 font-mono">{d.value}</span>
+                  <span className="text-sage-700 font-mono font-semibold">{d.symbol}</span>
+                  <span className="text-sage-400 mx-1">=</span>
+                  <span className="text-teal-700 font-mono">{d.value}</span>
                 </div>
               ))}
             </div>
@@ -431,8 +430,8 @@ export default function PracticalExercises() {
         {/* Solution steps */}
         <div className="p-5 space-y-4">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-6 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-xs font-bold">S</span>
-            <span className="text-sm font-semibold text-slate-300">Solución paso a paso</span>
+            <span className="w-6 h-6 rounded-full bg-sage-700/10 border border-sage-700/30 flex items-center justify-center text-sage-700 text-xs font-bold">S</span>
+            <span className="text-sm font-semibold text-sage-700">Solución paso a paso</span>
           </div>
 
           {ex.solution.map((part, pIdx) => {
@@ -440,48 +439,48 @@ export default function PracticalExercises() {
             return (
               <div
                 key={pIdx}
-                className="border border-slate-700 rounded-xl overflow-hidden"
+                className="border border-sage-200 rounded-xl overflow-hidden"
               >
                 <button
-                  className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-700/30 transition-all"
+                  className="w-full flex items-center justify-between p-4 text-left hover:bg-sage-50/60 transition-all"
                   onClick={() => togglePart(ex.id, pIdx)}
                 >
                   <div className="flex items-center gap-3">
                     <div className="step-circle">{pIdx + 1}</div>
-                    <span className="font-semibold text-white text-sm">{part.part}</span>
+                    <span className="font-semibold text-sage-900 text-sm">{part.part}</span>
                   </div>
-                  <span className="text-slate-400 text-lg">{isOpen ? '▲' : '▼'}</span>
+                  <span className="text-sage-400 text-lg">{isOpen ? '▲' : '▼'}</span>
                 </button>
 
                 {isOpen && (
-                  <div className="border-t border-slate-700 p-4 bg-slate-900/30 space-y-3">
+                  <div className="border-t border-sage-200 p-4 bg-sage-50/30 space-y-3">
                     {part.steps.map((step, sIdx) => (
                       <div
                         key={sIdx}
                         className={`rounded-lg p-4 border ${
                           step.isResult
-                            ? 'border-emerald-500/40 bg-emerald-500/5'
-                            : 'border-slate-700 bg-slate-900/50'
+                            ? 'border-sage-700/30 bg-sage-700/5'
+                            : 'border-sage-200 bg-white'
                         }`}
                       >
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs font-mono text-slate-500">
+                          <span className="text-xs font-mono text-sage-400">
                             {step.isResult ? '✅ RESULTADO' : `Paso ${sIdx + 1}`}
                           </span>
-                          <span className={`text-xs font-semibold ${step.isResult ? 'text-emerald-400' : 'text-slate-300'}`}>
+                          <span className={`text-xs font-semibold ${step.isResult ? 'text-sage-700' : 'text-sage-600'}`}>
                             {step.title}
                           </span>
                         </div>
                         <pre
                           className={`font-mono text-sm leading-relaxed whitespace-pre-wrap mb-2 p-3 rounded-lg ${
                             step.isResult
-                              ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
-                              : 'bg-slate-800 text-cyan-300'
+                              ? 'bg-sage-700/5 text-sage-700 border border-sage-700/20'
+                              : 'bg-sage-50 text-teal-700 border border-sage-200'
                           }`}
                         >
                           {step.formula}
                         </pre>
-                        <p className="text-xs text-slate-400 leading-relaxed">
+                        <p className="text-xs text-sage-500 leading-relaxed">
                           💡 {step.explanation}
                         </p>
                       </div>
@@ -493,35 +492,35 @@ export default function PracticalExercises() {
           })}
 
           {/* Final answer box */}
-          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 mt-2">
-            <div className="text-xs font-semibold text-emerald-400 uppercase mb-2 flex items-center gap-1">
+          <div className="bg-sage-700/5 border border-sage-700/25 rounded-xl p-4 mt-2">
+            <div className="text-xs font-semibold text-sage-700 uppercase mb-2 flex items-center gap-1">
               ✅ Respuesta final
             </div>
-            <p className="font-mono text-sm text-emerald-300">{ex.answer}</p>
+            <p className="font-mono text-sm text-sage-700">{ex.answer}</p>
           </div>
         </div>
       </div>
 
       {/* Tips Box */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-5">
-        <h3 className="font-bold text-white mb-4">Estrategia General de Resolución</h3>
+      <div className="bg-white border border-sage-200 rounded-xl p-5">
+        <h3 className="font-bold text-sage-900 mb-4">Estrategia General de Resolución</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
           {[
-            { n: '1', title: 'Identifica el sistema', desc: 'Batch, Fed-Batch o Continuo. Define los límites del sistema de control de volumen.', color: '#22c55e' },
-            { n: '2', title: 'Escribe los balances', desc: 'dX/dt, dS/dt, dP/dt. Usa la forma general: acum. = entrada − salida + generación.', color: '#06b6d4' },
-            { n: '3', title: 'Identifica el régimen', desc: 'Fase exponencial (μ = cte), estado estacionario (d/dt = 0), o transitorio.', color: '#a855f7' },
-            { n: '4', title: 'Verifica con unidades', desc: 'Análisis dimensional: g/L, h⁻¹, g/g. Cierra el balance de carbono o energía.', color: '#f59e0b' },
+            { n: '1', title: 'Identifica el sistema', desc: 'Batch, Fed-Batch o Continuo. Define los límites del sistema de control de volumen.', color: '#4A6741' },
+            { n: '2', title: 'Escribe los balances', desc: 'dX/dt, dS/dt, dP/dt. Usa la forma general: acum. = entrada − salida + generación.', color: '#0F766E' },
+            { n: '3', title: 'Identifica el régimen', desc: 'Fase exponencial (μ = cte), estado estacionario (d/dt = 0), o transitorio.', color: '#6D28D9' },
+            { n: '4', title: 'Verifica con unidades', desc: 'Análisis dimensional: g/L, h⁻¹, g/g. Cierra el balance de carbono o energía.', color: '#B45309' },
           ].map(tip => (
             <div
               key={tip.n}
               className="rounded-lg p-4 border"
-              style={{ borderColor: `${tip.color}33`, backgroundColor: `${tip.color}0a` }}
+              style={{ borderColor: `${tip.color}25`, backgroundColor: `${tip.color}08` }}
             >
-              <div className="step-circle mb-3" style={{ background: `linear-gradient(135deg, ${tip.color}, ${tip.color}88)` }}>
+              <div className="step-circle mb-3" style={{ background: `linear-gradient(135deg, ${tip.color}, ${tip.color}99)` }}>
                 {tip.n}
               </div>
-              <div className="font-semibold mb-1" style={{ color: tip.color }}>{tip.title}</div>
-              <div className="text-xs text-slate-400 leading-relaxed">{tip.desc}</div>
+              <div className="font-semibold mb-1 text-sm" style={{ color: tip.color }}>{tip.title}</div>
+              <div className="text-xs text-sage-500 leading-relaxed">{tip.desc}</div>
             </div>
           ))}
         </div>

@@ -5,7 +5,7 @@ const BIOREACTOR_TYPES = [
   {
     id: 'batch',
     name: 'Batch (Discontinuo)',
-    color: '#f59e0b',
+    color: '#B45309',
     icon: '🔒',
     description: 'Sistema cerrado: nutrientes y microorganismos se cargan al inicio; no hay entrada ni salida de líquido durante el proceso.',
     advantages: [
@@ -33,15 +33,15 @@ const BIOREACTOR_TYPES = [
   {
     id: 'fedbatch',
     name: 'Fed-Batch (Semi-continuo)',
-    color: '#22c55e',
+    color: '#4A6741',
     icon: '⬆️',
     description: 'El sustrato (y/o nutrientes) se alimentan de forma continua o intermitente, pero no hay efluente. El volumen aumenta con el tiempo.',
     advantages: [
-      '✓ Control preciso de μ mediante perfil de alimentación',
-      '✓ Evita inhibición por exceso de sustrato (efecto Crabtree)',
-      '✓ Máxima concentración final de biomasa/producto',
-      '✓ Reduce represión catabólica en organismos como E. coli',
-      '✓ Mayor rendimiento vs. batch simple',
+      'Control preciso de μ mediante perfil de alimentación',
+      'Evita inhibición por exceso de sustrato (efecto Crabtree)',
+      'Máxima concentración final de biomasa/producto',
+      'Reduce represión catabólica en organismos como E. coli',
+      'Mayor rendimiento vs. batch simple',
     ],
     disadvantages: [
       'Requiere sistema de control de alimentación sofisticado',
@@ -64,7 +64,7 @@ const BIOREACTOR_TYPES = [
   {
     id: 'continuous',
     name: 'Continuo (CSTR / Quimiostato)',
-    color: '#06b6d4',
+    color: '#0F766E',
     icon: '🔄',
     description: 'Entrada y salida continua de medio de cultivo. En estado estacionario, todas las variables permanecen constantes (μ = D).',
     advantages: [
@@ -94,14 +94,14 @@ const BIOREACTOR_TYPES = [
 ]
 
 const BIOREACTOR_COMPONENTS = [
-  { id: 'vessel', name: 'Tanque/Vessel', desc: 'Recipiente de acero inoxidable 316L. Diseño de doble pared para control de T.', color: '#64748b', pos: 'center' },
-  { id: 'agitator', name: 'Agitador / Impeller', desc: 'Turbina Rushton o marine propeller. Genera turbulencia para kLa ≥ 200 h⁻¹.', color: '#22c55e', pos: 'center' },
-  { id: 'sparger', name: 'Sparger de Aire', desc: 'Distribuidor de O₂ o N₂. Tamaño de burbuja crítico para transferencia de masa.', color: '#06b6d4', pos: 'bottom' },
-  { id: 'probes', name: 'Sondas en Línea', desc: 'pH, pO₂ disuelto, temperatura, turbidez (biomasa on-line).', color: '#a855f7', pos: 'side' },
-  { id: 'jacket', name: 'Camisa de Temperatura', desc: 'Agua/vapor para control exacto de T. ΔT < ±0.1°C en biofármacos.', color: '#f59e0b', pos: 'outer' },
-  { id: 'controller', name: 'Sistema de Control (DCS)', desc: 'PID cascada para pH, pO₂, T. Comunicación OPC-UA para GMP.', color: '#ef4444', pos: 'external' },
-  { id: 'foam', name: 'Antiespumante', desc: 'Sensor capacitivo + bomba dosificadora. Evita colapso de espuma.', color: '#84cc16', pos: 'top' },
-  { id: 'harvest', name: 'Puerto de Cosecha', desc: 'Válvula estéril de muestreo y descarga con membrana a presión.', color: '#ec4899', pos: 'bottom' },
+  { id: 'vessel',     name: 'Tanque/Vessel',        desc: 'Recipiente de acero inoxidable 316L. Diseño de doble pared para control de T.', color: '#879186' },
+  { id: 'agitator',  name: 'Agitador / Impeller',   desc: 'Turbina Rushton o marine propeller. Genera turbulencia para kLa ≥ 200 h⁻¹.', color: '#4A6741' },
+  { id: 'sparger',   name: 'Sparger de Aire',        desc: 'Distribuidor de O₂ o N₂. Tamaño de burbuja crítico para transferencia de masa.', color: '#0F766E' },
+  { id: 'probes',    name: 'Sondas en Línea',        desc: 'pH, pO₂ disuelto, temperatura, turbidez (biomasa on-line).', color: '#6D28D9' },
+  { id: 'jacket',    name: 'Camisa de Temperatura',  desc: 'Agua/vapor para control exacto de T. ΔT < ±0.1°C en biofármacos.', color: '#B45309' },
+  { id: 'controller',name: 'Sistema de Control (DCS)',desc: 'PID cascada para pH, pO₂, T. Comunicación OPC-UA para GMP.', color: '#DC2626' },
+  { id: 'foam',      name: 'Antiespumante',           desc: 'Sensor capacitivo + bomba dosificadora. Evita colapso de espuma.', color: '#65A30D' },
+  { id: 'harvest',   name: 'Puerto de Cosecha',       desc: 'Válvula estéril de muestreo y descarga con membrana a presión.', color: '#DB2777' },
 ]
 
 const SCALING_CHALLENGES = [
@@ -146,9 +146,9 @@ export default function BioreactorModule() {
       />
 
       {/* ─── Bioreactor Diagram (SVG) ─── */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-6">
-        <h3 className="font-semibold text-white mb-2">Componentes de un Biorreactor Industrial</h3>
-        <p className="text-xs text-slate-500 mb-5">
+      <div className="bg-white rounded-xl border border-sage-200 p-6">
+        <h3 className="font-semibold text-sage-900 mb-2">Componentes de un Biorreactor Industrial</h3>
+        <p className="text-xs text-sage-400 mb-5">
           Haz clic en un componente para ver sus especificaciones técnicas.
         </p>
         <div className="flex flex-col lg:flex-row gap-6">
@@ -166,19 +166,19 @@ export default function BioreactorModule() {
                   onClick={() => setActiveComponent(c => c === comp.id ? null : comp.id)}
                   className={`text-left p-3 rounded-lg border transition-all text-sm ${
                     activeComponent === comp.id
-                      ? 'border-opacity-80 bg-opacity-20'
-                      : 'border-slate-700 hover:border-slate-600 bg-slate-900/40'
+                      ? ''
+                      : 'border-sage-200 hover:border-sage-300 bg-sage-50/40'
                   }`}
                   style={activeComponent === comp.id ? {
                     borderColor: comp.color,
-                    backgroundColor: `${comp.color}18`,
+                    backgroundColor: `${comp.color}10`,
                   } : {}}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: comp.color }} />
-                    <span className="font-medium text-white">{comp.name}</span>
+                    <span className="font-medium text-sage-900">{comp.name}</span>
                   </div>
-                  <p className="text-xs text-slate-400 leading-relaxed">{comp.desc}</p>
+                  <p className="text-xs text-sage-500 leading-relaxed">{comp.desc}</p>
                 </button>
               ))}
             </div>
@@ -188,7 +188,7 @@ export default function BioreactorModule() {
 
       {/* ─── Type Selector ─── */}
       <div>
-        <h3 className="font-semibold text-white mb-4">Seleccionar Modo de Operación</h3>
+        <h3 className="font-semibold text-sage-900 mb-4">Seleccionar Modo de Operación</h3>
         <div className="flex flex-wrap gap-3 mb-6">
           {BIOREACTOR_TYPES.map(t => (
             <button
@@ -196,19 +196,19 @@ export default function BioreactorModule() {
               onClick={() => setActiveType(t.id)}
               className={`px-4 py-2.5 rounded-lg border text-sm font-medium transition-all flex items-center gap-2 ${
                 activeType === t.id
-                  ? 'text-white'
-                  : 'border-slate-700 text-slate-400 hover:text-slate-200 bg-slate-800'
+                  ? ''
+                  : 'border-sage-200 text-sage-500 hover:text-sage-800 bg-white'
               }`}
               style={activeType === t.id ? {
                 borderColor: t.color,
-                backgroundColor: `${t.color}22`,
+                backgroundColor: `${t.color}12`,
                 color: t.color,
               } : {}}
             >
               <span>{t.icon}</span>
               {t.name}
               {t.highlight && (
-                <span className="text-xs bg-emerald-500/30 text-emerald-300 px-1.5 py-0.5 rounded font-bold">
+                <span className="text-xs px-1.5 py-0.5 rounded font-bold bg-sage-700/10 text-sage-700">
                   PREFERIDO
                 </span>
               )}
@@ -218,7 +218,7 @@ export default function BioreactorModule() {
 
         {selectedType && (
           <div
-            className="rounded-xl border p-6 bg-slate-800"
+            className="rounded-xl border p-6 bg-white"
             style={{ borderColor: `${selectedType.color}44` }}
           >
             <div className="flex items-start gap-4 mb-5">
@@ -227,35 +227,35 @@ export default function BioreactorModule() {
                 <h3 className="text-xl font-bold" style={{ color: selectedType.color }}>
                   {selectedType.name}
                 </h3>
-                <p className="text-slate-400 text-sm mt-1 leading-relaxed">{selectedType.description}</p>
+                <p className="text-sage-500 text-sm mt-1 leading-relaxed">{selectedType.description}</p>
               </div>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               <div>
-                <h4 className="text-xs font-semibold text-slate-500 uppercase mb-3">Ventajas</h4>
+                <h4 className="text-xs font-semibold text-sage-400 uppercase mb-3">Ventajas</h4>
                 <ul className="space-y-1.5">
                   {selectedType.advantages.map((a, i) => (
-                    <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
-                      <span className="text-emerald-400 mt-0.5 flex-shrink-0">✓</span>
+                    <li key={i} className="text-sm text-sage-600 flex items-start gap-2">
+                      <span className="text-sage-700 mt-0.5 flex-shrink-0">✓</span>
                       {a}
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <h4 className="text-xs font-semibold text-slate-500 uppercase mb-3">Desventajas</h4>
+                <h4 className="text-xs font-semibold text-sage-400 uppercase mb-3">Desventajas</h4>
                 <ul className="space-y-1.5">
                   {selectedType.disadvantages.map((d, i) => (
-                    <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
-                      <span className="text-red-400 mt-0.5 flex-shrink-0">✗</span>
+                    <li key={i} className="text-sm text-sage-600 flex items-start gap-2">
+                      <span className="text-red-500 mt-0.5 flex-shrink-0">✗</span>
                       {d}
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <h4 className="text-xs font-semibold text-slate-500 uppercase mb-3">Balances de Masa</h4>
+                <h4 className="text-xs font-semibold text-sage-400 uppercase mb-3">Balances de Masa</h4>
                 {selectedType.equations.map((eq, i) => (
                   <div key={i} className="formula-block text-xs mb-1">{eq}</div>
                 ))}
@@ -264,8 +264,8 @@ export default function BioreactorModule() {
                   <MetricBadge label="Escalabilidad" value={selectedType.scalability} color={selectedType.color} />
                   <MetricBadge label="Complejidad control" value={selectedType.control} color={selectedType.color} />
                 </div>
-                <div className="mt-3 p-3 bg-slate-900 rounded-lg text-xs text-slate-400">
-                  <span className="font-semibold text-slate-300">Aplicaciones: </span>
+                <div className="mt-3 p-3 bg-sage-50 rounded-lg text-xs text-sage-500 border border-sage-200">
+                  <span className="font-semibold text-sage-700">Aplicaciones: </span>
                   {selectedType.uses}
                 </div>
               </div>
@@ -275,14 +275,14 @@ export default function BioreactorModule() {
       </div>
 
       {/* ─── Comparison Table ─── */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-        <div className="p-4 border-b border-slate-700">
-          <h3 className="font-semibold text-white">Tabla Comparativa de Sistemas de Fermentación</h3>
+      <div className="bg-white rounded-xl border border-sage-200 overflow-hidden">
+        <div className="p-4 border-b border-sage-200">
+          <h3 className="font-semibold text-sage-900">Tabla Comparativa de Sistemas de Fermentación</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-900 text-xs text-slate-500">
+              <tr className="bg-sage-50 text-xs text-sage-400">
                 <th className="py-3 px-4 text-left">Parámetro</th>
                 {BIOREACTOR_TYPES.map(t => (
                   <th key={t.id} className="py-3 px-4 text-center" style={{ color: t.color }}>
@@ -303,25 +303,25 @@ export default function BioreactorModule() {
                 ['Aplicación biofármaco', 'Sí', 'Sí (preferido)', 'Limitado (GMP)'],
                 ['Estado estacionario', 'No', 'Pseudo-estac.', 'Sí (μ = D)'],
               ].map(([param, batch, fed, cont], i) => (
-                <tr key={param} className={i % 2 === 0 ? 'bg-slate-800' : 'bg-slate-800/50'}>
-                  <td className="py-2.5 px-4 font-medium text-slate-300">{param}</td>
-                  <td className="py-2.5 px-4 text-center text-amber-300 font-mono text-xs">{batch}</td>
-                  <td className="py-2.5 px-4 text-center text-emerald-300 font-mono text-xs font-semibold">{fed}</td>
-                  <td className="py-2.5 px-4 text-center text-cyan-300 font-mono text-xs">{cont}</td>
+                <tr key={param} className={i % 2 === 0 ? 'bg-white' : 'bg-sage-50/50'}>
+                  <td className="py-2.5 px-4 font-medium text-sage-700">{param}</td>
+                  <td className="py-2.5 px-4 text-center font-mono text-xs" style={{ color: '#B45309' }}>{batch}</td>
+                  <td className="py-2.5 px-4 text-center font-mono text-xs font-semibold" style={{ color: '#4A6741' }}>{fed}</td>
+                  <td className="py-2.5 px-4 text-center font-mono text-xs" style={{ color: '#0F766E' }}>{cont}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="p-3 border-t border-slate-700 text-xs text-slate-500">
+        <div className="p-3 border-t border-sage-200 text-xs text-sage-400">
           ★ Alta concentración de células en fed-batch (HCDC: High Cell Density Cultivation). Valores típicos; dependen del microorganismo y proceso.
         </div>
       </div>
 
       {/* ─── Scaling Challenges ─── */}
       <div>
-        <h3 className="font-semibold text-white mb-1">Desafíos de Escalado (Scale-Up)</h3>
-        <p className="text-sm text-slate-400 mb-5">
+        <h3 className="font-semibold text-sage-900 mb-1">Desafíos de Escalado (Scale-Up)</h3>
+        <p className="text-sm text-sage-500 mb-5">
           El escalado de bioprocesos requiere ingeniería rigurosa. Los principios de similaridad
           geométrica, cinemática y dinámica raramente pueden satisfacerse simultáneamente.
         </p>
@@ -329,28 +329,28 @@ export default function BioreactorModule() {
           {SCALING_CHALLENGES.map(ch => (
             <div
               key={ch.title}
-              className={`bio-card bg-slate-800 border rounded-xl p-5 ${
+              className={`bio-card bg-white border rounded-xl p-5 ${
                 ch.risk === 'alto'
-                  ? 'border-red-500/30'
-                  : 'border-amber-500/30'
+                  ? 'border-red-200'
+                  : 'border-amber-200'
               }`}
             >
               <div className="flex items-start justify-between gap-2 mb-3">
-                <h4 className="font-semibold text-white text-sm">{ch.title}</h4>
+                <h4 className="font-semibold text-sage-900 text-sm">{ch.title}</h4>
                 <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${
                   ch.risk === 'alto'
-                    ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                    : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                    ? 'bg-red-50 text-red-600 border border-red-200'
+                    : 'bg-amber-50 text-amber-700 border border-amber-200'
                 }`}>
                   Riesgo {ch.risk}
                 </span>
               </div>
-              <p className="text-slate-400 text-xs leading-relaxed mb-3">{ch.desc}</p>
+              <p className="text-sage-500 text-xs leading-relaxed mb-3">{ch.desc}</p>
               <div className="formula text-xs">{ch.formula}</div>
             </div>
           ))}
         </div>
-        <div className="mt-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 text-sm text-emerald-300">
+        <div className="mt-4 bg-sage-700/5 border border-sage-700/20 rounded-xl p-4 text-sm text-sage-700">
           <strong>Enfoque moderno:</strong> La Dinámica de Fluidos Computacional (CFD) combinada con
           gemelos digitales permite simular gradientes de concentración, temperatura y shear stress
           antes de construir reactores físicos, reduciendo tiempo y costo de desarrollo.
@@ -363,9 +363,11 @@ export default function BioreactorModule() {
 // ─── SVG Bioreactor Diagram ────────────────────────────────────────────────────
 function BioreactorSVG({ activeComponent, setActiveComponent }) {
   const highlight = (id) => activeComponent === id
-  const getStroke = (id, def = '#475569') => highlight(id) ? BIOREACTOR_COMPONENTS.find(c => c.id === id)?.color ?? def : def
+  const getStroke = (id, def = '#C4CFC0') => highlight(id)
+    ? BIOREACTOR_COMPONENTS.find(c => c.id === id)?.color ?? def
+    : def
   const getFill = (id, def = 'transparent') => highlight(id)
-    ? `${BIOREACTOR_COMPONENTS.find(c => c.id === id)?.color}22` ?? def
+    ? `${BIOREACTOR_COMPONENTS.find(c => c.id === id)?.color}18` ?? def
     : def
 
   return (
@@ -373,20 +375,20 @@ function BioreactorSVG({ activeComponent, setActiveComponent }) {
       {/* Jacket outer */}
       <g onClick={() => setActiveComponent(c => c === 'jacket' ? null : 'jacket')} className="cursor-pointer">
         <rect x="30" y="60" width="160" height="200" rx="20" ry="20"
-          fill={getFill('jacket', '#1e293b')}
-          stroke={getStroke('jacket', '#f59e0b')}
+          fill={getFill('jacket', '#FEF9EE')}
+          stroke={getStroke('jacket', '#B45309')}
           strokeWidth={highlight('jacket') ? 2 : 1.5}
           strokeDasharray={highlight('jacket') ? '' : '6 3'}
-          opacity="0.6"
+          opacity="0.7"
         />
-        <text x="108" y="55" textAnchor="middle" fill="#f59e0b" fontSize="8" opacity="0.8">Camisa T°</text>
+        <text x="108" y="55" textAnchor="middle" fill="#B45309" fontSize="8" opacity="0.9">Camisa T°</text>
       </g>
 
       {/* Main vessel */}
       <g onClick={() => setActiveComponent(c => c === 'vessel' ? null : 'vessel')} className="cursor-pointer">
         <rect x="42" y="70" width="136" height="180" rx="14" ry="14"
-          fill={getFill('vessel', '#0f172a')}
-          stroke={getStroke('vessel', '#64748b')}
+          fill={getFill('vessel', '#F7F9F4')}
+          stroke={getStroke('vessel', '#879186')}
           strokeWidth={highlight('vessel') ? 2.5 : 2}
         />
       </g>
@@ -396,39 +398,39 @@ function BioreactorSVG({ activeComponent, setActiveComponent }) {
         <rect x="43" y="71" width="134" height="178" rx="13" ry="13" />
       </clipPath>
       <rect x="43" y="160" width="134" height="89" rx="0"
-        fill="#22c55e11" clipPath="url(#vesselClip)" />
-      <text x="110" y="210" textAnchor="middle" fill="#22c55e44" fontSize="9">caldo</text>
+        fill="#4A674122" clipPath="url(#vesselClip)" />
+      <text x="110" y="210" textAnchor="middle" fill="#4A674166" fontSize="9">caldo</text>
 
       {/* Agitator shaft */}
       <line x1="110" y1="70" x2="110" y2="220"
-        stroke={getStroke('agitator', '#22c55e')}
+        stroke={getStroke('agitator', '#4A6741')}
         strokeWidth={highlight('agitator') ? 3 : 2}
         className="cursor-pointer"
         onClick={() => setActiveComponent(c => c === 'agitator' ? null : 'agitator')}
       />
       {/* Impeller blades */}
-      {[180, 200, 220].map((y, i) => (
+      {[180, 200, 220].map((y) => (
         <g key={y}
           onClick={() => setActiveComponent(c => c === 'agitator' ? null : 'agitator')}
           className="cursor-pointer"
         >
           <line x1="75" y1={y} x2="145" y2={y}
-            stroke={getStroke('agitator', '#22c55e')}
+            stroke={getStroke('agitator', '#4A6741')}
             strokeWidth={highlight('agitator') ? 3 : 2}
           />
           <rect x="72" y={y - 6} width="16" height="12" rx="2"
-            fill={getFill('agitator', '#22c55e33')}
-            stroke={getStroke('agitator', '#22c55e')}
+            fill={getFill('agitator', '#4A674122')}
+            stroke={getStroke('agitator', '#4A6741')}
             strokeWidth="1"
           />
           <rect x="132" y={y - 6} width="16" height="12" rx="2"
-            fill={getFill('agitator', '#22c55e33')}
-            stroke={getStroke('agitator', '#22c55e')}
+            fill={getFill('agitator', '#4A674122')}
+            stroke={getStroke('agitator', '#4A6741')}
             strokeWidth="1"
           />
         </g>
       ))}
-      <text x="148" y="200" fill="#22c55e" fontSize="7" opacity="0.8"
+      <text x="148" y="200" fill="#4A6741" fontSize="7" opacity="0.9"
         onClick={() => setActiveComponent(c => c === 'agitator' ? null : 'agitator')}
         className="cursor-pointer"
       >Agit.</text>
@@ -436,72 +438,72 @@ function BioreactorSVG({ activeComponent, setActiveComponent }) {
       {/* Sparger */}
       <g onClick={() => setActiveComponent(c => c === 'sparger' ? null : 'sparger')} className="cursor-pointer">
         <ellipse cx="110" cy="240" rx="25" ry="5"
-          fill={getFill('sparger', '#06b6d411')}
-          stroke={getStroke('sparger', '#06b6d4')}
+          fill={getFill('sparger', '#0F766E11')}
+          stroke={getStroke('sparger', '#0F766E')}
           strokeWidth={highlight('sparger') ? 2 : 1}
         />
         <line x1="110" y1="245" x2="110" y2="270"
-          stroke={getStroke('sparger', '#06b6d4')} strokeWidth="2" />
+          stroke={getStroke('sparger', '#0F766E')} strokeWidth="2" />
         {[95, 102, 110, 118, 125].map(x => (
           <circle key={x} cx={x} cy="233" r="2"
-            fill={getStroke('sparger', '#06b6d4')} opacity="0.6" />
+            fill={getStroke('sparger', '#0F766E')} opacity="0.6" />
         ))}
-        <text x="110" y="282" textAnchor="middle" fill="#06b6d4" fontSize="7">Sparger O₂</text>
+        <text x="110" y="282" textAnchor="middle" fill="#0F766E" fontSize="7">Sparger O₂</text>
       </g>
 
       {/* Probes (side) */}
       <g onClick={() => setActiveComponent(c => c === 'probes' ? null : 'probes')} className="cursor-pointer">
         <rect x="15" y="130" width="27" height="8" rx="2"
-          fill={getFill('probes', '#a855f711')}
-          stroke={getStroke('probes', '#a855f7')}
+          fill={getFill('probes', '#6D28D911')}
+          stroke={getStroke('probes', '#6D28D9')}
           strokeWidth={highlight('probes') ? 2 : 1}
         />
         <line x1="42" y1="134" x2="56" y2="134"
-          stroke={getStroke('probes', '#a855f7')} strokeWidth="1.5" />
-        <text x="12" y="127" fill="#a855f7" fontSize="7">pH/pO₂</text>
+          stroke={getStroke('probes', '#6D28D9')} strokeWidth="1.5" />
+        <text x="12" y="127" fill="#6D28D9" fontSize="7">pH/pO₂</text>
       </g>
 
       {/* Foam probe + pump */}
       <g onClick={() => setActiveComponent(c => c === 'foam' ? null : 'foam')} className="cursor-pointer">
         <line x1="110" y1="70" x2="110" y2="40"
-          stroke={getStroke('foam', '#84cc16')} strokeWidth="1.5" />
+          stroke={getStroke('foam', '#65A30D')} strokeWidth="1.5" />
         <rect x="95" y="28" width="30" height="12" rx="2"
-          fill={getFill('foam', '#84cc1611')}
-          stroke={getStroke('foam', '#84cc16')} strokeWidth="1"
+          fill={getFill('foam', '#65A30D11')}
+          stroke={getStroke('foam', '#65A30D')} strokeWidth="1"
         />
-        <text x="110" y="38" textAnchor="middle" fill="#84cc16" fontSize="7">Antiesp.</text>
+        <text x="110" y="38" textAnchor="middle" fill="#65A30D" fontSize="7">Antiesp.</text>
       </g>
 
       {/* Harvest port */}
       <g onClick={() => setActiveComponent(c => c === 'harvest' ? null : 'harvest')} className="cursor-pointer">
         <rect x="178" y="200" width="30" height="10" rx="2"
-          fill={getFill('harvest', '#ec489911')}
-          stroke={getStroke('harvest', '#ec4899')} strokeWidth="1"
+          fill={getFill('harvest', '#DB277711')}
+          stroke={getStroke('harvest', '#DB2777')} strokeWidth="1"
         />
         <line x1="178" y1="205" x2="168" y2="205"
-          stroke={getStroke('harvest', '#ec4899')} strokeWidth="1.5"
+          stroke={getStroke('harvest', '#DB2777')} strokeWidth="1.5"
         />
-        <text x="183" y="222" textAnchor="middle" fill="#ec4899" fontSize="7">Cosecha</text>
+        <text x="183" y="222" textAnchor="middle" fill="#DB2777" fontSize="7">Cosecha</text>
       </g>
 
       {/* Controller (external) */}
       <g onClick={() => setActiveComponent(c => c === 'controller' ? null : 'controller')} className="cursor-pointer">
         <rect x="165" y="80" width="40" height="28" rx="3"
-          fill={getFill('controller', '#ef444411')}
-          stroke={getStroke('controller', '#ef4444')} strokeWidth="1"
+          fill={getFill('controller', '#DC262611')}
+          stroke={getStroke('controller', '#DC2626')} strokeWidth="1"
         />
-        <text x="185" y="91" textAnchor="middle" fill="#ef4444" fontSize="6">DCS/PLC</text>
-        <text x="185" y="101" textAnchor="middle" fill="#ef444488" fontSize="6">Control</text>
+        <text x="185" y="91" textAnchor="middle" fill="#DC2626" fontSize="6">DCS/PLC</text>
+        <text x="185" y="101" textAnchor="middle" fill="#DC262688" fontSize="6">Control</text>
         <line x1="165" y1="94" x2="178" y2="94"
-          stroke={getStroke('controller', '#ef4444')} strokeWidth="1" strokeDasharray="2 2"
+          stroke={getStroke('controller', '#DC2626')} strokeWidth="1" strokeDasharray="2 2"
         />
       </g>
 
       {/* Labels */}
-      <text x="110" y="14" textAnchor="middle" fill="#94a3b8" fontSize="9" fontWeight="bold">
+      <text x="110" y="14" textAnchor="middle" fill="#4A6741" fontSize="9" fontWeight="bold">
         Biorreactor STR
       </text>
-      <text x="110" y="26" textAnchor="middle" fill="#64748b" fontSize="7">
+      <text x="110" y="26" textAnchor="middle" fill="#879186" fontSize="7">
         (Stirred Tank Reactor)
       </text>
     </svg>
@@ -511,7 +513,7 @@ function BioreactorSVG({ activeComponent, setActiveComponent }) {
 function MetricBadge({ label, value, color }) {
   return (
     <div className="flex items-center justify-between text-xs">
-      <span className="text-slate-500">{label}:</span>
+      <span className="text-sage-400">{label}:</span>
       <span className="font-semibold" style={{ color }}>{value}</span>
     </div>
   )

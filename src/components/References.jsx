@@ -14,7 +14,7 @@ const BOOKS = [
     type: 'Libro de texto',
     relevance: 'Fundamento de microbiología; capítulos 5–7 cubren fisiología y crecimiento microbiano.',
     tags: ['Microbiología', 'Fisiología', 'Crecimiento'],
-    color: '#22c55e',
+    color: '#4A6741',
     icon: '📗',
   },
   {
@@ -29,7 +29,7 @@ const BOOKS = [
     type: 'Texto de ingeniería',
     relevance: 'Referencia principal en ingeniería de bioprocesos. Cubre cinética, biorreactores y escalado.',
     tags: ['Cinética', 'Biorreactores', 'Escalado', 'Diseño'],
-    color: '#06b6d4',
+    color: '#0F766E',
     icon: '📘',
   },
   {
@@ -44,7 +44,7 @@ const BOOKS = [
     type: 'Texto de ingeniería',
     relevance: 'Excelente tratamiento de operación de fermentadores industriales, control y optimización de procesos.',
     tags: ['Fermentación Industrial', 'Control', 'Fed-Batch', 'Scale-up'],
-    color: '#a855f7',
+    color: '#6D28D9',
     icon: '📙',
   },
   {
@@ -59,7 +59,7 @@ const BOOKS = [
     type: 'Texto avanzado',
     relevance: 'Tratamiento riguroso de fenómenos de transporte, balances de energía y transferencia de masa en biorreactores.',
     tags: ['Transferencia de masa', 'kLa', 'Fenómenos de transporte'],
-    color: '#f59e0b',
+    color: '#B45309',
     icon: '📒',
   },
   {
@@ -74,7 +74,7 @@ const BOOKS = [
     type: 'Texto avanzado',
     relevance: 'Análisis termodinámico, estequiometría detallada del crecimiento y modelos de metabolismo energético.',
     tags: ['Termodinámica', 'Estequiometría', 'Energía'],
-    color: '#ef4444',
+    color: '#DC2626',
     icon: '📕',
   },
   {
@@ -89,7 +89,7 @@ const BOOKS = [
     type: 'Texto avanzado',
     relevance: 'Modelos de metabolismo, análisis de flujos metabólicos (MFA) y diseño de procesos óptimos.',
     tags: ['Modelos metabólicos', 'MFA', 'Diseño óptimo'],
-    color: '#84cc16',
+    color: '#65A30D',
     icon: '📗',
   },
 ]
@@ -104,7 +104,7 @@ const ARTICLES = [
     doi: '10.1146/annurev.mi.03.100149.002103',
     relevance: 'Artículo seminal que establece la ecuación de Monod para cinética microbiana. Lectura obligatoria.',
     badge: 'SEMINAL',
-    badgeColor: '#f59e0b',
+    badgeColor: '#B45309',
   },
   {
     authors: 'Monod, J.',
@@ -115,7 +115,7 @@ const ARTICLES = [
     doi: null,
     relevance: 'Tesis doctoral de Monod. Base experimental de toda la cinética microbiana moderna.',
     badge: 'TESIS DOCTORAL',
-    badgeColor: '#a855f7',
+    badgeColor: '#6D28D9',
   },
   {
     authors: 'Michaelis, L., Menten, M.L.',
@@ -126,7 +126,7 @@ const ARTICLES = [
     doi: null,
     relevance: 'Modelo de Michaelis-Menten para enzimas; base conceptual del modelo de Monod.',
     badge: 'CLÁSICO',
-    badgeColor: '#22c55e',
+    badgeColor: '#4A6741',
   },
   {
     authors: 'Pirt, S.J.',
@@ -137,7 +137,7 @@ const ARTICLES = [
     doi: '10.1098/rspb.1965.0069',
     relevance: 'Introduce el concepto de energía de mantenimiento (ms) en el balance de sustrato.',
     badge: 'CLÁSICO',
-    badgeColor: '#22c55e',
+    badgeColor: '#4A6741',
   },
 ]
 
@@ -148,7 +148,7 @@ const ONLINE_RESOURCES = [
     desc: 'Revista líder en ingeniería bioquímica. Artículos sobre cinética, biorreactores y escalado.',
     icon: '🔬',
     badge: 'Revista científica',
-    color: '#22c55e',
+    color: '#4A6741',
   },
   {
     name: 'MIT OpenCourseWare — Biochemical Engineering (10.28)',
@@ -156,7 +156,7 @@ const ONLINE_RESOURCES = [
     desc: 'Notas de clase, problem sets y exámenes del curso de ingeniería bioquímica del MIT. Acceso libre.',
     icon: '🎓',
     badge: 'Curso universitario',
-    color: '#06b6d4',
+    color: '#0F766E',
   },
   {
     name: 'Coursera — Bioinformatics & Bioprocess Engineering',
@@ -164,7 +164,7 @@ const ONLINE_RESOURCES = [
     desc: 'Cursos online de universidades como UCSD, Penn, Johns Hopkins sobre biología computacional y bioprocesos.',
     icon: '💻',
     badge: 'MOOC',
-    color: '#a855f7',
+    color: '#6D28D9',
   },
   {
     name: 'NIST Chemistry WebBook',
@@ -172,7 +172,7 @@ const ONLINE_RESOURCES = [
     desc: 'Datos termodinámicos y de propiedades físicas de sustratos y metabolitos relevantes en bioprocesos.',
     icon: '📊',
     badge: 'Base de datos',
-    color: '#f59e0b',
+    color: '#B45309',
   },
   {
     name: 'BiGG Database (UCSD) — Genome-scale models',
@@ -180,7 +180,7 @@ const ONLINE_RESOURCES = [
     desc: 'Modelos metabólicos a escala genómica (GEM) para E. coli, S. cerevisiae y otros microorganismos industriales.',
     icon: '🧬',
     badge: 'Base de datos',
-    color: '#ef4444',
+    color: '#DC2626',
   },
   {
     name: 'KEGG — Metabolic Pathways',
@@ -188,7 +188,7 @@ const ONLINE_RESOURCES = [
     desc: 'Base de datos de rutas metabólicas, enzimas y compuestos para análisis de metabolismo microbiano.',
     icon: '🗺️',
     badge: 'Base de datos',
-    color: '#84cc16',
+    color: '#65A30D',
   },
 ]
 
@@ -207,22 +207,22 @@ export default function References() {
       {/* Section tabs */}
       <div className="flex gap-2 flex-wrap">
         {[
-          { id: 'books', label: 'Libros de texto', count: BOOKS.length },
-          { id: 'articles', label: 'Artículos clave', count: ARTICLES.length },
-          { id: 'online', label: 'Recursos en línea', count: ONLINE_RESOURCES.length },
+          { id: 'books',    label: 'Libros de texto',    count: BOOKS.length            },
+          { id: 'articles', label: 'Artículos clave',    count: ARTICLES.length         },
+          { id: 'online',   label: 'Recursos en línea',  count: ONLINE_RESOURCES.length },
         ].map(s => (
           <button
             key={s.id}
             onClick={() => setActiveSection(s.id)}
             className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all flex items-center gap-2 ${
               activeSection === s.id
-                ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-400'
-                : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-slate-200'
+                ? 'bg-sage-700/10 border-sage-700/50 text-sage-800'
+                : 'bg-white border-sage-200 text-sage-500 hover:text-sage-800 hover:border-sage-400'
             }`}
           >
             {s.label}
             <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              activeSection === s.id ? 'bg-emerald-500/30 text-emerald-300' : 'bg-slate-700 text-slate-500'
+              activeSection === s.id ? 'bg-sage-700/15 text-sage-700' : 'bg-sage-100 text-sage-400'
             }`}>
               {s.count}
             </span>
@@ -233,16 +233,16 @@ export default function References() {
       {/* ─── Books ─── */}
       {activeSection === 'books' && (
         <div className="space-y-3">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-sage-400">
             Haz clic en una referencia para expandir detalles y notas de relevancia.
           </p>
-          {BOOKS.map((book, i) => (
+          {BOOKS.map((book) => (
             <div
               key={book.id}
-              className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden bio-card"
+              className="bg-white border border-sage-200 rounded-xl overflow-hidden bio-card"
             >
               <button
-                className="w-full flex items-start gap-4 p-4 text-left hover:bg-slate-700/20 transition-all"
+                className="w-full flex items-start gap-4 p-4 text-left hover:bg-sage-50 transition-all"
                 onClick={() => setExpandedBook(expandedBook === book.id ? null : book.id)}
               >
                 <span className="text-2xl flex-shrink-0">{book.icon}</span>
@@ -251,47 +251,47 @@ export default function References() {
                     <div>
                       <span
                         className="text-xs px-2 py-0.5 rounded-full mr-2 font-medium"
-                        style={{ color: book.color, backgroundColor: `${book.color}22`, border: `1px solid ${book.color}44` }}
+                        style={{ color: book.color, backgroundColor: `${book.color}15`, border: `1px solid ${book.color}33` }}
                       >
                         {book.type}
                       </span>
-                      <span className="text-xs text-slate-500 font-mono">{book.year}</span>
+                      <span className="text-xs text-sage-400 font-mono">{book.year}</span>
                     </div>
-                    <span className="text-slate-500 flex-shrink-0">{expandedBook === book.id ? '▲' : '▼'}</span>
+                    <span className="text-sage-400 flex-shrink-0">{expandedBook === book.id ? '▲' : '▼'}</span>
                   </div>
                   <div className="mt-1">
-                    <p className="text-sm text-slate-400">{book.authors} ({book.year})</p>
-                    <p className="font-bold text-white mt-0.5" style={{ color: book.color }}>
+                    <p className="text-sm text-sage-500">{book.authors} ({book.year})</p>
+                    <p className="font-bold mt-0.5" style={{ color: book.color }}>
                       {book.title}
                     </p>
-                    <p className="text-xs text-slate-500">{book.edition} — {book.publisher}</p>
+                    <p className="text-xs text-sage-400">{book.edition} — {book.publisher}</p>
                   </div>
                 </div>
               </button>
 
               {expandedBook === book.id && (
                 <div
-                  className="px-4 pb-4 border-t border-slate-700 pt-3"
-                  style={{ backgroundColor: `${book.color}07` }}
+                  className="px-4 pb-4 border-t border-sage-200 pt-3"
+                  style={{ backgroundColor: `${book.color}06` }}
                 >
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Datos de publicación</p>
+                      <p className="text-xs font-semibold text-sage-400 uppercase mb-2">Datos de publicación</p>
                       <div className="space-y-1 text-xs font-mono">
-                        <div><span className="text-slate-500">ISBN: </span><span className="text-slate-300">{book.isbn}</span></div>
-                        <div><span className="text-slate-500">Páginas: </span><span className="text-slate-300">{book.pages}</span></div>
-                        <div><span className="text-slate-500">Editorial: </span><span className="text-slate-300">{book.publisher}</span></div>
+                        <div><span className="text-sage-400">ISBN: </span><span className="text-sage-700">{book.isbn}</span></div>
+                        <div><span className="text-sage-400">Páginas: </span><span className="text-sage-700">{book.pages}</span></div>
+                        <div><span className="text-sage-400">Editorial: </span><span className="text-sage-700">{book.publisher}</span></div>
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-slate-500 uppercase mb-2">Relevancia para el curso</p>
-                      <p className="text-xs text-slate-400 leading-relaxed">{book.relevance}</p>
+                      <p className="text-xs font-semibold text-sage-400 uppercase mb-2">Relevancia para el curso</p>
+                      <p className="text-xs text-sage-500 leading-relaxed">{book.relevance}</p>
                       <div className="flex flex-wrap gap-1 mt-2">
                         {book.tags.map(tag => (
                           <span
                             key={tag}
                             className="text-xs px-2 py-0.5 rounded-md"
-                            style={{ color: book.color, backgroundColor: `${book.color}15`, border: `1px solid ${book.color}33` }}
+                            style={{ color: book.color, backgroundColor: `${book.color}12`, border: `1px solid ${book.color}25` }}
                           >
                             {tag}
                           </span>
@@ -301,10 +301,10 @@ export default function References() {
                   </div>
 
                   {/* Citation format */}
-                  <div className="mt-3 pt-3 border-t border-slate-700">
-                    <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Formato APA</p>
-                    <p className="text-xs font-mono text-slate-400 bg-slate-900 rounded-lg p-3 leading-relaxed">
-                      {book.authors} ({book.year}). <em className="not-italic text-white">{book.title}</em> ({book.edition}). {book.publisher}. {book.isbn}.
+                  <div className="mt-3 pt-3 border-t border-sage-200">
+                    <p className="text-xs font-semibold text-sage-400 uppercase mb-1">Formato APA</p>
+                    <p className="text-xs font-mono text-sage-500 bg-sage-50 rounded-lg p-3 leading-relaxed border border-sage-200">
+                      {book.authors} ({book.year}). <em className="not-italic text-sage-700">{book.title}</em> ({book.edition}). {book.publisher}. {book.isbn}.
                     </p>
                   </div>
                 </div>
@@ -317,43 +317,43 @@ export default function References() {
       {/* ─── Articles ─── */}
       {activeSection === 'articles' && (
         <div className="space-y-4">
-          <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-sm text-amber-300">
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
             📜 Los artículos de Monod (1942, 1949) son de lectura obligatoria. Representan el fundamento
             histórico y matemático de toda la cinética microbiana moderna.
           </div>
           {ARTICLES.map((art, i) => (
             <div
               key={i}
-              className="bg-slate-800 border border-slate-700 rounded-xl p-5"
+              className="bg-white border border-sage-200 rounded-xl p-5"
             >
               <div className="flex items-start justify-between gap-3 mb-3">
                 <span
                   className="text-xs px-2 py-1 rounded-full font-bold flex-shrink-0"
-                  style={{ color: art.badgeColor, backgroundColor: `${art.badgeColor}22`, border: `1px solid ${art.badgeColor}44` }}
+                  style={{ color: art.badgeColor, backgroundColor: `${art.badgeColor}15`, border: `1px solid ${art.badgeColor}33` }}
                 >
                   {art.badge}
                 </span>
-                <span className="text-xs font-mono text-slate-500">{art.year}</span>
+                <span className="text-xs font-mono text-sage-400">{art.year}</span>
               </div>
-              <p className="text-xs text-slate-400">{art.authors} ({art.year}).</p>
-              <p className="font-bold text-white mt-1">{art.title}.</p>
-              <p className="text-sm text-slate-300 mt-0.5 italic">{art.journal}, {art.vol}.</p>
+              <p className="text-xs text-sage-400">{art.authors} ({art.year}).</p>
+              <p className="font-bold text-sage-900 mt-1">{art.title}.</p>
+              <p className="text-sm text-sage-600 mt-0.5 italic">{art.journal}, {art.vol}.</p>
               {art.doi && (
-                <p className="text-xs font-mono text-emerald-500 mt-1">DOI: {art.doi}</p>
+                <p className="text-xs font-mono mt-1" style={{ color: '#4A6741' }}>DOI: {art.doi}</p>
               )}
               <div
-                className="mt-3 rounded-lg p-3 border text-xs text-slate-400"
-                style={{ borderColor: `${art.badgeColor}33`, backgroundColor: `${art.badgeColor}0a` }}
+                className="mt-3 rounded-lg p-3 border text-xs text-sage-500"
+                style={{ borderColor: `${art.badgeColor}25`, backgroundColor: `${art.badgeColor}08` }}
               >
                 <span className="font-semibold" style={{ color: art.badgeColor }}>Relevancia: </span>
                 {art.relevance}
               </div>
 
               {/* APA citation */}
-              <div className="mt-3 pt-3 border-t border-slate-700">
-                <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Formato APA</p>
-                <p className="text-xs font-mono text-slate-400 bg-slate-900 rounded-lg p-2 leading-relaxed">
-                  {art.authors} ({art.year}). {art.title}. <em className="text-slate-300">{art.journal}</em>, {art.vol}.
+              <div className="mt-3 pt-3 border-t border-sage-200">
+                <p className="text-xs font-semibold text-sage-400 uppercase mb-1">Formato APA</p>
+                <p className="text-xs font-mono text-sage-500 bg-sage-50 rounded-lg p-2 leading-relaxed border border-sage-200">
+                  {art.authors} ({art.year}). {art.title}. <em className="text-sage-600">{art.journal}</em>, {art.vol}.
                   {art.doi && ` https://doi.org/${art.doi}`}
                 </p>
               </div>
@@ -365,14 +365,14 @@ export default function References() {
       {/* ─── Online Resources ─── */}
       {activeSection === 'online' && (
         <div className="space-y-3">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-sage-400">
             Recursos digitales recomendados para complementar el estudio. Los URLs son referencias a los sitios; acceso sujeto a disponibilidad.
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
             {ONLINE_RESOURCES.map((res, i) => (
               <div
                 key={i}
-                className="bio-card bg-slate-800 border border-slate-700 rounded-xl p-4"
+                className="bio-card bg-white border border-sage-200 rounded-xl p-4"
                 style={{ borderLeftColor: res.color, borderLeftWidth: '3px' }}
               >
                 <div className="flex items-start gap-3 mb-2">
@@ -380,15 +380,15 @@ export default function References() {
                   <div>
                     <span
                       className="text-xs px-2 py-0.5 rounded-full"
-                      style={{ color: res.color, backgroundColor: `${res.color}22`, border: `1px solid ${res.color}33` }}
+                      style={{ color: res.color, backgroundColor: `${res.color}12`, border: `1px solid ${res.color}25` }}
                     >
                       {res.badge}
                     </span>
-                    <h4 className="font-semibold text-white text-sm mt-1 leading-snug">{res.name}</h4>
+                    <h4 className="font-semibold text-sage-900 text-sm mt-1 leading-snug">{res.name}</h4>
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed mb-3">{res.desc}</p>
-                <div className="font-mono text-xs text-slate-500 bg-slate-900 rounded-lg px-3 py-1.5 border border-slate-700">
+                <p className="text-xs text-sage-500 leading-relaxed mb-3">{res.desc}</p>
+                <div className="font-mono text-xs text-sage-400 bg-sage-50 rounded-lg px-3 py-1.5 border border-sage-200">
                   {res.url}
                 </div>
               </div>
@@ -398,23 +398,23 @@ export default function References() {
       )}
 
       {/* ─── Course Attribution ─── */}
-      <div className="bg-slate-800 border border-emerald-500/20 rounded-xl p-6 text-center">
+      <div className="bg-white border border-sage-200 rounded-xl p-6 text-center">
         <div className="text-3xl mb-3">🎓</div>
-        <h3 className="font-bold text-white text-lg">Programa de Ingeniería de Bioprocesos (2024)</h3>
-        <p className="text-slate-400 mt-1 mb-4">
+        <h3 className="font-bold text-sage-900 text-lg">Programa de Ingeniería de Bioprocesos (2024)</h3>
+        <p className="text-sage-500 mt-1 mb-4">
           Dr. Sebastián Coba Daza · Departamento de Ingeniería Química y Bioprocesos
         </p>
         <div className="flex flex-wrap justify-center gap-3 text-xs">
           {['Cinética Microbiana', 'Modelo de Monod', 'Biorreactores STR', 'Fed-Batch', 'Escalado Industrial', 'CFD'].map(tag => (
             <span
               key={tag}
-              className="px-3 py-1 rounded-full border border-emerald-500/30 text-emerald-400 bg-emerald-500/10"
+              className="px-3 py-1 rounded-full border border-sage-700/25 text-sage-700 bg-sage-700/8"
             >
               {tag}
             </span>
           ))}
         </div>
-        <p className="text-slate-600 text-xs mt-4">
+        <p className="text-sage-300 text-xs mt-4">
           Esta aplicación fue desarrollada como herramienta educativa complementaria al programa académico.
           El contenido matemático y técnico sigue estrictamente las referencias bibliográficas citadas.
         </p>

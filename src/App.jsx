@@ -34,24 +34,24 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100">
+    <div className="min-h-screen bg-sage-50 text-sage-900">
       {/* ─── Header ─── */}
-      <header className="bg-slate-950 border-b border-slate-800 sticky top-0 z-50">
+      <header className="bg-white/80 backdrop-blur-md border-b border-sage-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-green-700 flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sage-600 to-sage-800 flex items-center justify-center text-white font-bold text-sm">
               FB
             </div>
             <div>
-              <h1 className="text-sm font-bold text-emerald-400 leading-tight">
+              <h1 className="text-sm font-bold text-sage-800 leading-tight">
                 Fermentación & Cinética Microbiana
               </h1>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-sage-400">
                 Dr. Sebastián Coba Daza · Ingeniería de Bioprocesos 2024
               </p>
             </div>
           </div>
-          <span className="hidden sm:block text-xs text-slate-600 font-mono">
+          <span className="hidden sm:block text-xs text-sage-400 font-mono">
             v1.0 · Herramienta Educativa
           </span>
         </div>
@@ -65,8 +65,8 @@ export default function App() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium transition-all duration-150 border-b-2 whitespace-nowrap
                     ${activeTab === tab.id
-                      ? 'border-emerald-500 text-emerald-400'
-                      : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-600'
+                      ? 'border-sage-700 text-sage-800'
+                      : 'border-transparent text-sage-400 hover:text-sage-700 hover:border-sage-300'
                     }`}
                 >
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -84,12 +84,12 @@ export default function App() {
       </main>
 
       {/* ─── Footer ─── */}
-      <footer className="border-t border-slate-800 bg-slate-950 mt-12 py-6 text-center">
-        <p className="text-slate-500 text-xs">
+      <footer className="border-t border-sage-200 bg-white mt-12 py-6 text-center">
+        <p className="text-sage-400 text-xs">
           Aplicación educativa basada en el programa de{' '}
-          <span className="text-emerald-500 font-medium">Ingeniería de Bioprocesos (2024)</span>
+          <span className="text-sage-700 font-medium">Ingeniería de Bioprocesos (2024)</span>
           {' '}· Dr. Sebastián Coba Daza ·{' '}
-          <span className="text-slate-600">Uso exclusivamente académico</span>
+          <span className="text-sage-400">Uso exclusivamente académico</span>
         </p>
       </footer>
     </div>

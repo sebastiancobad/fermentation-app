@@ -54,7 +54,7 @@ const PHASES = [
   {
     id: 'exp',
     label: 'Fase Exponencial (LOG)',
-    color: '#22c55e',
+    color: '#4A6741',
     xStart: 8, xEnd: 24,
     description: [
       'División celular a velocidad máxima y constante.',
@@ -101,17 +101,17 @@ const CustomTooltip = ({ active, payload, activePhase }) => {
   const phase = PHASES.find(p => p.id === d.phase)
   return (
     <div className="custom-tooltip max-w-xs">
-      <div className="text-xs font-mono text-slate-400 mb-1">t = {d.time} h</div>
-      <div className="text-emerald-400 font-semibold">
+      <div className="text-xs font-mono text-sage-500 mb-1">t = {d.time} h</div>
+      <div className="text-sage-700 font-semibold">
         X = {d.biomass.toFixed(3)} g·L⁻¹
       </div>
-      <div className="text-cyan-400 text-xs">
+      <div className="text-teal-600 text-xs">
         log₁₀(X) = {d.logBiomass.toFixed(3)}
       </div>
       {phase && (
-        <div className="mt-2 pt-2 border-t border-slate-600 text-xs text-slate-300">
+        <div className="mt-2 pt-2 border-t border-sage-200 text-xs text-sage-600">
           <span style={{ color: phase.color }} className="font-semibold">{phase.label}</span>
-          <p className="mt-1 text-slate-400">{phase.metabolism}</p>
+          <p className="mt-1 text-sage-500">{phase.metabolism}</p>
         </div>
       )}
     </div>
@@ -146,8 +146,8 @@ export default function GrowthCurve() {
       />
 
       {/* ─── Controls ─── */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
-        <h3 className="text-sm font-semibold text-slate-300 mb-4">Parámetros del Cultivo</h3>
+      <div className="bg-white rounded-xl border border-sage-200 p-5">
+        <h3 className="text-sm font-semibold text-sage-600 mb-4">Parámetros del Cultivo</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <SliderParam
             label="μmax"
@@ -156,7 +156,7 @@ export default function GrowthCurve() {
             min={0.05} max={0.80} step={0.01}
             onChange={v => setMu(parseFloat(v))}
             derived={`td = ${td} h`}
-            color="#22c55e"
+            color="#4A6741"
           />
           <SliderParam
             label="Fin Fase LAG"
@@ -172,7 +172,7 @@ export default function GrowthCurve() {
             value={expEnd}
             min={lagEnd + 4} max={40} step={1}
             onChange={v => setExpEnd(parseInt(v))}
-            color="#22c55e"
+            color="#4A6741"
           />
           <SliderParam
             label="Fin Fase STAT"
@@ -183,45 +183,45 @@ export default function GrowthCurve() {
             color="#06b6d4"
           />
         </div>
-        <div className="flex gap-4 mt-4 pt-4 border-t border-slate-700">
+        <div className="flex gap-4 mt-4 pt-4 border-t border-sage-200">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={logScale}
               onChange={e => setLogScale(e.target.checked)}
-              className="rounded accent-emerald-500"
+              className="rounded accent-sage-700"
             />
-            <span className="text-sm text-slate-300">Escala logarítmica</span>
+            <span className="text-sm text-sage-600">Escala logarítmica</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={showAnnotations}
               onChange={e => setShowAnnotations(e.target.checked)}
-              className="rounded accent-emerald-500"
+              className="rounded accent-sage-700"
             />
-            <span className="text-sm text-slate-300">Mostrar fases</span>
+            <span className="text-sm text-sage-600">Mostrar fases</span>
           </label>
         </div>
       </div>
 
       {/* ─── Chart ─── */}
-      <div className="bg-slate-800 rounded-xl border border-slate-700 p-5">
+      <div className="bg-white rounded-xl border border-sage-200 p-5">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-sm font-semibold text-white">
+          <h3 className="text-sm font-semibold text-sage-900">
             Concentración de Biomasa vs Tiempo
           </h3>
-          <span className="text-xs font-mono text-slate-500">
+          <span className="text-xs font-mono text-sage-400">
             μmax = {mu} h⁻¹ · td = {td} h
           </span>
         </div>
-        <p className="text-xs text-slate-500 mb-4">
+        <p className="text-xs text-sage-400 mb-4">
           Eje Y: {logScale ? 'log₁₀(X) [adimensional]' : 'X [g·L⁻¹]'}
         </p>
 
         <ResponsiveContainer width="100%" height={380}>
           <LineChart data={data} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#D8DED4" />
 
             {/* Phase shading */}
             {showAnnotations && PHASES.map(ph => (
@@ -246,31 +246,31 @@ export default function GrowthCurve() {
 
             <XAxis
               dataKey="time"
-              stroke="#64748b"
-              tick={{ fill: '#94a3b8', fontSize: 11 }}
-              label={{ value: 'Tiempo (h)', position: 'insideBottom', offset: -10, fill: '#64748b', fontSize: 12 }}
+              stroke="#879186"
+              tick={{ fill: '#6B7B6E', fontSize: 11 }}
+              label={{ value: 'Tiempo (h)', position: 'insideBottom', offset: -10, fill: '#879186', fontSize: 12 }}
             />
             <YAxis
-              stroke="#64748b"
-              tick={{ fill: '#94a3b8', fontSize: 11 }}
+              stroke="#879186"
+              tick={{ fill: '#6B7B6E', fontSize: 11 }}
               label={{
                 value: logScale ? 'log₁₀(X)' : 'X (g·L⁻¹)',
-                angle: -90, position: 'insideLeft', offset: 15, fill: '#64748b', fontSize: 12
+                angle: -90, position: 'insideLeft', offset: 15, fill: '#879186', fontSize: 12
               }}
             />
             <Tooltip content={<CustomTooltip activePhase={activePhase} />} />
             <Legend
-              wrapperStyle={{ fontSize: '12px', color: '#94a3b8', paddingTop: '10px' }}
+              wrapperStyle={{ fontSize: '12px', color: '#6B7B6E', paddingTop: '10px' }}
             />
 
             <Line
               type="monotone"
               dataKey={logScale ? 'logBiomass' : 'biomass'}
               name={logScale ? 'log₁₀(X)' : 'Biomasa X (g/L)'}
-              stroke="#22c55e"
+              stroke="#4A6741"
               strokeWidth={2.5}
               dot={false}
-              activeDot={{ r: 5, fill: '#22c55e', stroke: '#0f172a', strokeWidth: 2 }}
+              activeDot={{ r: 5, fill: '#4A6741', stroke: '#FFFFFF', strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -307,7 +307,7 @@ export default function GrowthCurve() {
             <button
               key={ph.id}
               onClick={() => setActivePhase(ph.id)}
-              className="bio-card bg-slate-800 border border-slate-700 rounded-xl p-4 text-left hover:border-opacity-50 transition-all"
+              className="bio-card bg-white border border-sage-200 rounded-xl p-4 text-left hover:border-opacity-50 transition-all"
               style={{ borderColor: `${ph.color}44` }}
             >
               <div className="flex items-center gap-2 mb-2">
@@ -316,10 +316,10 @@ export default function GrowthCurve() {
                   {ph.label}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-sage-500 leading-relaxed">
                 {ph.description[0]}
               </p>
-              <p className="text-xs text-slate-500 mt-2">
+              <p className="text-xs text-sage-400 mt-2">
                 t: {ph.xStart}–{ph.xEnd} h (por defecto)
               </p>
             </button>
@@ -328,11 +328,11 @@ export default function GrowthCurve() {
       )}
 
       {/* ─── Mathematical description ─── */}
-      <div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-        <h3 className="font-bold text-white mb-4">Descripción Matemática del Crecimiento</h3>
+      <div className="bg-white border border-sage-200 rounded-xl p-6">
+        <h3 className="font-bold text-sage-900 mb-4">Descripción Matemática del Crecimiento</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <p className="text-sm text-slate-400 mb-3">
+            <p className="text-sm text-sage-500 mb-3">
               La fase exponencial se describe por una ecuación diferencial de primer orden:
             </p>
             <div className="formula-block">
@@ -341,12 +341,12 @@ export default function GrowthCurve() {
             <div className="formula-block mt-2">
               Integrada: X(t) = X₀ · e^(μ·t)
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-xs text-sage-400 mt-2">
               Donde X₀ es la concentración inicial de biomasa al inicio de la fase exponencial.
             </p>
           </div>
           <div>
-            <p className="text-sm text-slate-400 mb-3">
+            <p className="text-sm text-sage-500 mb-3">
               Parámetros cinéticos derivados:
             </p>
             <div className="space-y-2">
@@ -355,15 +355,15 @@ export default function GrowthCurve() {
               <FormulaRow eq="n = t / td" desc="Número de generaciones" />
               <FormulaRow eq="X(t) = X₀ · 2^(t/td)" desc="Forma alternativa" />
             </div>
-            <div className="mt-3 bg-slate-900 rounded-lg p-3 font-mono text-sm">
-              <span className="text-slate-500">// Para μ = </span>
-              <span className="text-emerald-400">{mu}</span>
-              <span className="text-slate-500"> h⁻¹</span>
+            <div className="mt-3 bg-sage-50 rounded-lg p-3 font-mono text-sm">
+              <span className="text-sage-400">// Para μ = </span>
+              <span className="text-sage-700">{mu}</span>
+              <span className="text-sage-400"> h⁻¹</span>
               <br />
-              <span className="text-slate-500">td = ln(2) / </span>
-              <span className="text-emerald-400">{mu}</span>
-              <span className="text-slate-500"> = </span>
-              <span className="text-cyan-400">{td} h</span>
+              <span className="text-sage-400">td = ln(2) / </span>
+              <span className="text-sage-700">{mu}</span>
+              <span className="text-sage-400"> = </span>
+              <span className="text-teal-600">{td} h</span>
             </div>
           </div>
         </div>
@@ -376,7 +376,7 @@ function SliderParam({ label, unit, value, min, max, step, onChange, derived, co
   return (
     <div>
       <div className="flex justify-between items-center mb-1">
-        <label className="text-xs font-medium text-slate-400">{label}</label>
+        <label className="text-xs font-medium text-sage-500">{label}</label>
         <span className="font-mono text-sm font-bold" style={{ color }}>{value} {unit}</span>
       </div>
       <input
@@ -387,7 +387,7 @@ function SliderParam({ label, unit, value, min, max, step, onChange, derived, co
         className="w-full"
         style={{ accentColor: color }}
       />
-      {derived && <div className="text-xs text-slate-500 mt-1 font-mono">{derived}</div>}
+      {derived && <div className="text-xs text-sage-400 mt-1 font-mono">{derived}</div>}
     </div>
   )
 }
@@ -395,8 +395,8 @@ function SliderParam({ label, unit, value, min, max, step, onChange, derived, co
 function FormulaRow({ eq, desc }) {
   return (
     <div className="flex items-center gap-3">
-      <code className="formula text-xs px-2 py-1 text-emerald-400 flex-shrink-0">{eq}</code>
-      <span className="text-xs text-slate-400">{desc}</span>
+      <code className="formula text-xs px-2 py-1 text-sage-700 flex-shrink-0">{eq}</code>
+      <span className="text-xs text-sage-500">{desc}</span>
     </div>
   )
 }
@@ -404,7 +404,7 @@ function FormulaRow({ eq, desc }) {
 function PhaseDetail({ phase }) {
   return (
     <div
-      className="rounded-xl border p-6 bg-slate-800 transition-all"
+      className="rounded-xl border p-6 bg-white transition-all"
       style={{ borderColor: `${phase.color}55` }}
     >
       <div className="flex items-center gap-3 mb-4">
@@ -413,10 +413,10 @@ function PhaseDetail({ phase }) {
       </div>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
-          <p className="text-xs text-slate-500 font-semibold uppercase mb-2">Características</p>
+          <p className="text-xs text-sage-400 font-semibold uppercase mb-2">Características</p>
           <ul className="space-y-1.5">
             {phase.description.map((d, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+              <li key={i} className="flex items-start gap-2 text-sm text-sage-600">
                 <span style={{ color: phase.color }} className="mt-1 flex-shrink-0">▸</span>
                 {d}
               </li>
@@ -424,14 +424,14 @@ function PhaseDetail({ phase }) {
           </ul>
         </div>
         <div>
-          <p className="text-xs text-slate-500 font-semibold uppercase mb-2">Estado Metabólico</p>
+          <p className="text-xs text-sage-400 font-semibold uppercase mb-2">Estado Metabólico</p>
           <div
-            className="rounded-lg p-4 border text-sm text-slate-300 leading-relaxed"
+            className="rounded-lg p-4 border text-sm text-sage-600 leading-relaxed"
             style={{ backgroundColor: `${phase.color}11`, borderColor: `${phase.color}33` }}
           >
             {phase.metabolism}
           </div>
-          <div className="mt-3 text-xs text-slate-500">
+          <div className="mt-3 text-xs text-sage-400">
             Rango temporal por defecto: <span className="font-mono" style={{ color: phase.color }}>
               {phase.xStart} – {phase.xEnd} h
             </span>

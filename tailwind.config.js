@@ -7,15 +7,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        bio: {
-          50:  '#f0fdf4',
-          100: '#dcfce7',
-          400: '#4ade80',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
-          900: '#14532d',
-        }
+        sage: {
+          50:  '#F7F9F4',
+          100: '#EEF2EA',
+          200: '#D8DED4',
+          300: '#B8C4B4',
+          400: '#879186',
+          500: '#6B7B6E',
+          600: '#5B7F5C',
+          700: '#4A6741',
+          800: '#3D5A3E',
+          900: '#1A2E1A',
+        },
+        mint: '#E6F7ED',
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'Fira Code', 'Consolas', 'monospace'],
