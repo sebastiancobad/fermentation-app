@@ -7,9 +7,9 @@ import { SectionHeader } from './Dashboard'
 
 const MARKET_DATA = [
   { sector: 'Alimentos',   value: 136, color: '#B45309', growth: '+6.2%'  },
-  { sector: 'Farmacéutica',value: 109, color: '#4A6741', growth: '+9.1%'  },
-  { sector: 'Biocombust.', value: 78,  color: '#0F766E', growth: '+11.4%' },
-  { sector: 'Enzimas Ind.',value: 42,  color: '#6D28D9', growth: '+8.7%'  },
+  { sector: 'Farmacéutica',value: 109, color: '#2D6A4F', growth: '+9.1%'  },
+  { sector: 'Biocombust.', value: 78,  color: '#1B4965', growth: '+11.4%' },
+  { sector: 'Enzimas Ind.',value: 42,  color: '#7B2D8E', growth: '+8.7%'  },
   { sector: 'Otros',       value: 25,  color: '#879186', growth: '+5.3%'  },
 ]
 
@@ -21,7 +21,7 @@ const CASE_STUDIES = [
     organism: 'E. coli (K-12) / S. cerevisiae',
     mode: 'Fed-Batch',
     scale: '30,000 L',
-    color: '#4A6741',
+    color: '#2D6A4F',
     icon: '💉',
     metrics: [
       { label: 'Título final',    value: '2–5 g/L'         },
@@ -44,7 +44,7 @@ La inclusión de cuerpos de refractivos (inclusion bodies) requiere renaturaliza
     organism: 'Penicillium chrysogenum',
     mode: 'Fed-Batch',
     scale: '200,000 L',
-    color: '#6D28D9',
+    color: '#7B2D8E',
     icon: '🧬',
     metrics: [
       { label: 'Título final',        value: '40–70 g/L'       },
@@ -67,7 +67,7 @@ Las cepas modernas (derivadas de Wisconsin Q-176) producen hasta 50,000 veces m�
     organism: 'S. cerevisiae (ingeniería metabólica)',
     mode: 'Continuo / Batch en cascada',
     scale: '1,000,000 L',
-    color: '#0F766E',
+    color: '#1B4965',
     icon: '⛽',
     metrics: [
       { label: 'Título final',    value: '10–14% v/v'    },
@@ -90,7 +90,7 @@ const FUTURE_TECH = [
     desc: 'Simulación numérica de campos de velocidad, concentración y temperatura en biorreactores. Permite optimizar el diseño de impellers, posición de sparger y geometría del tanque sin experimentos físicos costosos.',
     tools: ['ANSYS Fluent', 'OpenFOAM', 'COMSOL Multiphysics'],
     icon: '🌊',
-    color: '#0F766E',
+    color: '#1B4965',
     impact: 'Reducción del 40–60% en tiempo de scale-up',
   },
   {
@@ -98,7 +98,7 @@ const FUTURE_TECH = [
     desc: 'Redes neuronales LSTM y modelos de ML para predicción de cinética, detección de anomalías en línea y optimización adaptativa de alimentación. Los gemelos digitales integran CFD + ML para control en tiempo real.',
     tools: ['TensorFlow', 'Python SciPy', 'Process Analytical Technology (PAT)'],
     icon: '🤖',
-    color: '#6D28D9',
+    color: '#7B2D8E',
     impact: 'Mejora del 15–30% en productividad',
   },
   {
@@ -106,7 +106,7 @@ const FUTURE_TECH = [
     desc: 'Diseño racional de rutas metabólicas, promotores sintéticos y circuitos de retroalimentación génica. CRISPR-Cas9 permite reingeniería precisa de microorganismos para producir compuestos imposibles por síntesis química.',
     tools: ['CRISPR-Cas9', 'DBTL cycle', 'Genome-scale models (GEMs)'],
     icon: '🧬',
-    color: '#4A6741',
+    color: '#2D6A4F',
     impact: 'Nuevos productos: cannabinoides, SPF, proteínas de araña',
   },
   {
@@ -134,7 +134,7 @@ export default function CaseStudies() {
       {/* ─── Market Stats ─── */}
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl border border-sage-200 p-5">
-          <h3 className="font-semibold text-sage-900 mb-1">Mercado Global de Fermentación Industrial</h3>
+          <h3 className="font-serif font-semibold text-forest-900 mb-1">Mercado Global de Fermentación Industrial</h3>
           <p className="text-xs text-sage-400 mb-4">Distribución por sector (2024) — Total: $390 billones USD</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={MARKET_DATA} margin={{ top: 5, right: 10, bottom: 30, left: 5 }}>
@@ -151,7 +151,7 @@ export default function CaseStudies() {
               />
               <Tooltip
                 contentStyle={{ background: '#FFFFFF', border: '1px solid #D8DED4', borderRadius: '8px', fontSize: '12px' }}
-                labelStyle={{ color: '#4A6741' }}
+                labelStyle={{ color: '#2D6A4F' }}
                 formatter={(v, n, { payload }) => [`$${v}B USD (${payload.growth})`, 'Mercado']}
               />
               <Bar dataKey="value" radius={[4, 4, 0, 0]}>
@@ -165,11 +165,11 @@ export default function CaseStudies() {
 
         <div className="grid grid-cols-2 gap-3 content-start">
           {[
-            { label: 'Mercado total 2024',          val: '$390B',   color: '#4A6741', icon: '💰' },
-            { label: 'CAGR 2024–2030',              val: '8.3%',    color: '#0F766E', icon: '📈' },
-            { label: 'Plantas industriales',         val: '>8,500',  color: '#6D28D9', icon: '🏭' },
+            { label: 'Mercado total 2024',          val: '$390B',   color: '#2D6A4F', icon: '💰' },
+            { label: 'CAGR 2024–2030',              val: '8.3%',    color: '#1B4965', icon: '📈' },
+            { label: 'Plantas industriales',         val: '>8,500',  color: '#7B2D8E', icon: '🏭' },
             { label: 'Empleo directo global',        val: '2.4M',    color: '#B45309', icon: '👷' },
-            { label: 'Proteínas recombinantes',      val: '$220B',   color: '#4A6741', icon: '🧪' },
+            { label: 'Proteínas recombinantes',      val: '$220B',   color: '#2D6A4F', icon: '🧪' },
             { label: 'Reducción CO₂ vs petroquím.', val: '40–70%',  color: '#65A30D', icon: '♻️' },
           ].map(s => (
             <div key={s.label} className="bio-card bg-white border border-sage-200 rounded-xl p-4 flex items-center gap-3">
@@ -185,7 +185,7 @@ export default function CaseStudies() {
 
       {/* ─── Case Studies ─── */}
       <div>
-        <h3 className="font-semibold text-sage-900 mb-4">Casos de Estudio: Procesos Industriales Reales</h3>
+        <h3 className="font-serif font-semibold text-forest-900 mb-4">Casos de Estudio: Procesos Industriales Reales</h3>
         <div className="flex gap-3 mb-5 flex-wrap">
           {CASE_STUDIES.map((c, i) => (
             <button
@@ -244,7 +244,7 @@ export default function CaseStudies() {
               </div>
 
               {current.cfd && (
-                <div className="mt-3 flex items-center gap-2 text-xs text-teal-700 bg-teal-50 border border-teal-200 rounded-lg px-3 py-2">
+                <div className="mt-3 flex items-center gap-2 text-xs text-navy-500 bg-navy-50 border border-navy-200 rounded-lg px-3 py-2">
                   <span>🌊</span>
                   Proceso optimizado con CFD para diseño de impeller y distribución de O₂
                 </div>
@@ -270,7 +270,7 @@ export default function CaseStudies() {
 
       {/* ─── Future Technologies ─── */}
       <div>
-        <h3 className="font-semibold text-sage-900 mb-2">Tecnologías Emergentes</h3>
+        <h3 className="font-serif font-semibold text-forest-900 mb-2">Tecnologías Emergentes</h3>
         <p className="text-sm text-sage-500 mb-5">
           La convergencia de ingeniería de procesos, computación y biología molecular está redefiniendo los límites de los bioprocesos industriales.
         </p>
@@ -284,7 +284,7 @@ export default function CaseStudies() {
               <div className="flex items-start gap-3 mb-3">
                 <span className="text-2xl">{tech.icon}</span>
                 <div>
-                  <h4 className="font-bold text-sage-900">{tech.title}</h4>
+                  <h4 className="font-bold text-forest-900">{tech.title}</h4>
                   <span
                     className="text-xs px-2 py-0.5 rounded-full mt-1 inline-block"
                     style={{ color: tech.color, backgroundColor: `${tech.color}15`, border: `1px solid ${tech.color}33` }}
@@ -307,11 +307,11 @@ export default function CaseStudies() {
       </div>
 
       {/* ─── CFD Section ─── */}
-      <div className="bg-white border border-teal-200 rounded-xl p-6">
+      <div className="bg-white border border-navy-200 rounded-xl p-6">
         <div className="flex items-start gap-4">
           <span className="text-3xl">🌊</span>
           <div>
-            <h3 className="font-bold text-sage-900 mb-2">
+            <h3 className="font-serif font-bold text-forest-900 mb-2">
               CFD Aplicada a Biorreactores: El Estándar Industrial
             </h3>
             <p className="text-sm text-sage-500 leading-relaxed mb-4">
@@ -325,8 +325,8 @@ export default function CaseStudies() {
                 ['Tiempo de mezcla (tm)', 'Calcular gradientes de pH y concentración de sustrato en reactores grandes (>10,000 L)'],
                 ['Escala de Kolmogorov (η)', 'η = (ν³/ε)^(1/4). Si dp > η, posible daño celular por micro-turbulencia'],
               ].map(([title, desc]) => (
-                <div key={title} className="bg-teal-50 rounded-lg p-3 border border-teal-200">
-                  <div className="font-semibold text-teal-700 text-xs mb-1">{title}</div>
+                <div key={title} className="bg-navy-50 rounded-lg p-3 border border-navy-200">
+                  <div className="font-semibold text-navy-500 text-xs mb-1">{title}</div>
                   <div className="text-xs text-sage-500">{desc}</div>
                 </div>
               ))}

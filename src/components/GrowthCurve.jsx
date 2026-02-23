@@ -4,6 +4,7 @@ import {
   Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea,
 } from 'recharts'
 import { SectionHeader } from './Dashboard'
+import Math from './Math'
 
 // ─── Data generation ────────────────────────────────────────────────────────
 function generateGrowthData(mu = 0.30, lagEnd = 8, expEnd = 24, statEnd = 36, X0 = 0.5, Xmax = 14) {
@@ -54,7 +55,7 @@ const PHASES = [
   {
     id: 'exp',
     label: 'Fase Exponencial (LOG)',
-    color: '#4A6741',
+    color: '#2D6A4F',
     xStart: 8, xEnd: 24,
     description: [
       'División celular a velocidad máxima y constante.',
@@ -102,10 +103,10 @@ const CustomTooltip = ({ active, payload, activePhase }) => {
   return (
     <div className="custom-tooltip max-w-xs">
       <div className="text-xs font-mono text-sage-500 mb-1">t = {d.time} h</div>
-      <div className="text-sage-700 font-semibold">
+      <div className="text-forest-600 font-semibold">
         X = {d.biomass.toFixed(3)} g·L⁻¹
       </div>
-      <div className="text-teal-600 text-xs">
+      <div className="text-navy-500 text-xs">
         log₁₀(X) = {d.logBiomass.toFixed(3)}
       </div>
       {phase && (
@@ -189,7 +190,7 @@ export default function GrowthCurve() {
               type="checkbox"
               checked={logScale}
               onChange={e => setLogScale(e.target.checked)}
-              className="rounded accent-sage-700"
+              className="rounded accent-forest-600"
             />
             <span className="text-sm text-sage-600">Escala logarítmica</span>
           </label>
@@ -198,7 +199,7 @@ export default function GrowthCurve() {
               type="checkbox"
               checked={showAnnotations}
               onChange={e => setShowAnnotations(e.target.checked)}
-              className="rounded accent-sage-700"
+              className="rounded accent-forest-600"
             />
             <span className="text-sm text-sage-600">Mostrar fases</span>
           </label>
@@ -208,7 +209,7 @@ export default function GrowthCurve() {
       {/* ─── Chart ─── */}
       <div className="bg-white rounded-xl border border-sage-200 p-5">
         <div className="flex items-center justify-between mb-1">
-          <h3 className="text-sm font-semibold text-sage-900">
+          <h3 className="text-sm font-semibold text-forest-900">
             Concentración de Biomasa vs Tiempo
           </h3>
           <span className="text-xs font-mono text-sage-400">
@@ -270,7 +271,7 @@ export default function GrowthCurve() {
               stroke="#4A6741"
               strokeWidth={2.5}
               dot={false}
-              activeDot={{ r: 5, fill: '#4A6741', stroke: '#FFFFFF', strokeWidth: 2 }}
+              activeDot={{ r: 5, fill: '#2D6A4F', stroke: '#FFFFFF', strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -329,18 +330,14 @@ export default function GrowthCurve() {
 
       {/* ─── Mathematical description ─── */}
       <div className="bg-white border border-sage-200 rounded-xl p-6">
-        <h3 className="font-bold text-sage-900 mb-4">Descripción Matemática del Crecimiento</h3>
+        <h3 className="font-serif font-bold text-forest-900 mb-4">Descripción Matemática del Crecimiento</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <p className="text-sm text-sage-500 mb-3">
               La fase exponencial se describe por una ecuación diferencial de primer orden:
             </p>
-            <div className="formula-block">
-              dX/dt = μ · X
-            </div>
-            <div className="formula-block mt-2">
-              Integrada: X(t) = X₀ · e^(μ·t)
-            </div>
+            <Math tex={String.raw`\frac{dX}{dt} = \mu \cdot X`} display />
+            <Math tex={String.raw`\text{Integrada: } X(t) = X_0 \cdot e^{\mu \cdot t}`} display className="mt-2" />
             <p className="text-xs text-sage-400 mt-2">
               Donde X₀ es la concentración inicial de biomasa al inicio de la fase exponencial.
             </p>
@@ -350,20 +347,14 @@ export default function GrowthCurve() {
               Parámetros cinéticos derivados:
             </p>
             <div className="space-y-2">
-              <FormulaRow eq="td = ln(2) / μmax" desc="Tiempo de duplicación" />
-              <FormulaRow eq="μ = Δln(X) / Δt" desc="Tasa de crecimiento específico" />
-              <FormulaRow eq="n = t / td" desc="Número de generaciones" />
-              <FormulaRow eq="X(t) = X₀ · 2^(t/td)" desc="Forma alternativa" />
+              <FormulaRow tex={String.raw`t_d = \frac{\ln(2)}{\mu_{\max}}`} desc="Tiempo de duplicación" />
+              <FormulaRow tex={String.raw`\mu = \frac{\Delta\ln(X)}{\Delta t}`} desc="Tasa de crecimiento específico" />
+              <FormulaRow tex={String.raw`n = \frac{t}{t_d}`} desc="Número de generaciones" />
+              <FormulaRow tex={String.raw`X(t) = X_0 \cdot 2^{t/t_d}`} desc="Forma alternativa" />
             </div>
-            <div className="mt-3 bg-sage-50 rounded-lg p-3 font-mono text-sm">
-              <span className="text-sage-400">// Para μ = </span>
-              <span className="text-sage-700">{mu}</span>
-              <span className="text-sage-400"> h⁻¹</span>
-              <br />
-              <span className="text-sage-400">td = ln(2) / </span>
-              <span className="text-sage-700">{mu}</span>
-              <span className="text-sage-400"> = </span>
-              <span className="text-teal-600">{td} h</span>
+            <div className="mt-3 bg-warm-code rounded-lg p-3 border border-sage-200">
+              <div className="text-xs font-semibold text-forest-600 mb-2">Para μ = {mu} h⁻¹</div>
+              <Math tex={String.raw`t_d = \frac{\ln(2)}{${mu}} = ${td} \;\text{h}`} display />
             </div>
           </div>
         </div>
@@ -392,10 +383,12 @@ function SliderParam({ label, unit, value, min, max, step, onChange, derived, co
   )
 }
 
-function FormulaRow({ eq, desc }) {
+function FormulaRow({ tex, desc }) {
   return (
     <div className="flex items-center gap-3">
-      <code className="formula text-xs px-2 py-1 text-sage-700 flex-shrink-0">{eq}</code>
+      <div className="formula text-xs px-2 py-1 flex-shrink-0">
+        <Math tex={tex} />
+      </div>
       <span className="text-xs text-sage-500">{desc}</span>
     </div>
   )

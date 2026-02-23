@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { SectionHeader } from './Dashboard'
+import Math from './Math'
 
 // ─── Exercise Data ────────────────────────────────────────────────────────────
 const EXERCISES = [
@@ -8,7 +9,7 @@ const EXERCISES = [
     title: 'Cálculo de μx y td a partir de datos experimentales',
     category: 'Cinética de crecimiento',
     difficulty: 'Básico',
-    diffColor: '#4A6741',
+    diffColor: '#2D6A4F',
     icon: '📊',
     topic: 'Fase exponencial, tasa de crecimiento específico, tiempo de duplicación',
     statement: `Un cultivo de Escherichia coli en medio mínimo con glucosa (37°C, pH 7.0) presenta los siguientes datos durante la fase exponencial:
@@ -342,7 +343,7 @@ export default function PracticalExercises() {
             onClick={() => { setActiveEx(i); setExpandedParts({}); setShowAll({}) }}
             className={`text-left p-4 rounded-xl border transition-all ${
               activeEx === i
-                ? 'border-sage-700/50 bg-sage-700/5'
+                ? 'border-forest-600/50 bg-forest-600/5'
                 : 'border-sage-200 bg-white hover:border-sage-400'
             }`}
           >
@@ -357,7 +358,7 @@ export default function PracticalExercises() {
                 </span>
               </div>
             </div>
-            <h3 className={`text-sm font-bold leading-snug mt-2 ${activeEx === i ? 'text-sage-800' : 'text-sage-700'}`}>
+            <h3 className={`text-sm font-bold leading-snug mt-2 ${activeEx === i ? 'text-forest-900' : 'text-forest-600'}`}>
               Ej. {e.id}: {e.title}
             </h3>
             <p className="text-xs text-sage-400 mt-1">{e.category}</p>
@@ -382,7 +383,7 @@ export default function PracticalExercises() {
                     {ex.difficulty}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-sage-900">{ex.title}</h3>
+                <h3 className="text-lg font-serif font-bold text-forest-900">{ex.title}</h3>
                 <p className="text-xs text-sage-400 mt-1">
                   📚 {ex.category} · {ex.topic}
                 </p>
@@ -390,7 +391,7 @@ export default function PracticalExercises() {
             </div>
             <button
               onClick={() => toggleShowAll(ex.id)}
-              className="flex-shrink-0 px-4 py-2 text-xs font-medium rounded-lg border border-sage-700/30 text-sage-700 bg-sage-700/5 hover:bg-sage-700/10 transition-all"
+              className="flex-shrink-0 px-4 py-2 text-xs font-medium rounded-lg border border-forest-600/30 text-forest-600 bg-forest-600/5 hover:bg-forest-600/10 transition-all"
             >
               {showAll[ex.id] ? 'Colapsar todo' : 'Ver solución completa'}
             </button>
@@ -400,11 +401,11 @@ export default function PracticalExercises() {
         {/* Statement */}
         <div className="p-5 border-b border-sage-200">
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-6 h-6 rounded-full bg-sage-200 flex items-center justify-center text-sage-700 text-xs font-bold">P</span>
-            <span className="text-sm font-semibold text-sage-700">Planteamiento del problema</span>
+            <span className="w-6 h-6 rounded-full bg-sage-200 flex items-center justify-center text-forest-600 text-xs font-bold">P</span>
+            <span className="text-sm font-semibold text-forest-600">Planteamiento del problema</span>
           </div>
           <div className="bg-sage-50 rounded-xl p-5 border border-sage-200">
-            <pre className="text-sm text-sage-700 whitespace-pre-wrap leading-relaxed font-sans">
+            <pre className="text-sm text-forest-600 whitespace-pre-wrap leading-relaxed font-sans">
               {ex.statement}
             </pre>
           </div>
@@ -418,9 +419,9 @@ export default function PracticalExercises() {
                   key={d.symbol}
                   className="bg-sage-50 border border-sage-200 rounded-lg px-3 py-2 text-xs"
                 >
-                  <span className="text-sage-700 font-mono font-semibold">{d.symbol}</span>
+                  <span className="text-forest-600 font-mono font-semibold">{d.symbol}</span>
                   <span className="text-sage-400 mx-1">=</span>
-                  <span className="text-teal-700 font-mono">{d.value}</span>
+                  <span className="text-navy-500 font-mono">{d.value}</span>
                 </div>
               ))}
             </div>
@@ -430,8 +431,8 @@ export default function PracticalExercises() {
         {/* Solution steps */}
         <div className="p-5 space-y-4">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-6 rounded-full bg-sage-700/10 border border-sage-700/30 flex items-center justify-center text-sage-700 text-xs font-bold">S</span>
-            <span className="text-sm font-semibold text-sage-700">Solución paso a paso</span>
+            <span className="w-6 h-6 rounded-full bg-forest-600/10 border border-forest-600/30 flex items-center justify-center text-forest-600 text-xs font-bold">S</span>
+            <span className="text-sm font-semibold text-forest-600">Solución paso a paso</span>
           </div>
 
           {ex.solution.map((part, pIdx) => {
@@ -447,7 +448,7 @@ export default function PracticalExercises() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="step-circle">{pIdx + 1}</div>
-                    <span className="font-semibold text-sage-900 text-sm">{part.part}</span>
+                    <span className="font-semibold text-forest-900 text-sm">{part.part}</span>
                   </div>
                   <span className="text-sage-400 text-lg">{isOpen ? '▲' : '▼'}</span>
                 </button>
@@ -459,7 +460,7 @@ export default function PracticalExercises() {
                         key={sIdx}
                         className={`rounded-lg p-4 border ${
                           step.isResult
-                            ? 'border-sage-700/30 bg-sage-700/5'
+                            ? 'border-forest-600/30 bg-forest-600/5'
                             : 'border-sage-200 bg-white'
                         }`}
                       >
@@ -467,15 +468,15 @@ export default function PracticalExercises() {
                           <span className="text-xs font-mono text-sage-400">
                             {step.isResult ? '✅ RESULTADO' : `Paso ${sIdx + 1}`}
                           </span>
-                          <span className={`text-xs font-semibold ${step.isResult ? 'text-sage-700' : 'text-sage-600'}`}>
+                          <span className={`text-xs font-semibold ${step.isResult ? 'text-forest-600' : 'text-sage-600'}`}>
                             {step.title}
                           </span>
                         </div>
                         <pre
                           className={`font-mono text-sm leading-relaxed whitespace-pre-wrap mb-2 p-3 rounded-lg ${
                             step.isResult
-                              ? 'bg-sage-700/5 text-sage-700 border border-sage-700/20'
-                              : 'bg-sage-50 text-teal-700 border border-sage-200'
+                              ? 'bg-forest-600/5 text-forest-600 border border-forest-600/20'
+                              : 'bg-sage-50 text-navy-500 border border-sage-200'
                           }`}
                         >
                           {step.formula}
@@ -492,23 +493,23 @@ export default function PracticalExercises() {
           })}
 
           {/* Final answer box */}
-          <div className="bg-sage-700/5 border border-sage-700/25 rounded-xl p-4 mt-2">
-            <div className="text-xs font-semibold text-sage-700 uppercase mb-2 flex items-center gap-1">
+          <div className="bg-forest-600/5 border border-forest-600/25 rounded-xl p-4 mt-2">
+            <div className="text-xs font-semibold text-forest-600 uppercase mb-2 flex items-center gap-1">
               ✅ Respuesta final
             </div>
-            <p className="font-mono text-sm text-sage-700">{ex.answer}</p>
+            <p className="font-mono text-sm text-forest-600">{ex.answer}</p>
           </div>
         </div>
       </div>
 
       {/* Tips Box */}
       <div className="bg-white border border-sage-200 rounded-xl p-5">
-        <h3 className="font-bold text-sage-900 mb-4">Estrategia General de Resolución</h3>
+        <h3 className="font-serif font-bold text-forest-900 mb-4">Estrategia General de Resolución</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
           {[
-            { n: '1', title: 'Identifica el sistema', desc: 'Batch, Fed-Batch o Continuo. Define los límites del sistema de control de volumen.', color: '#4A6741' },
-            { n: '2', title: 'Escribe los balances', desc: 'dX/dt, dS/dt, dP/dt. Usa la forma general: acum. = entrada − salida + generación.', color: '#0F766E' },
-            { n: '3', title: 'Identifica el régimen', desc: 'Fase exponencial (μ = cte), estado estacionario (d/dt = 0), o transitorio.', color: '#6D28D9' },
+            { n: '1', title: 'Identifica el sistema', desc: 'Batch, Fed-Batch o Continuo. Define los límites del sistema de control de volumen.', color: '#2D6A4F' },
+            { n: '2', title: 'Escribe los balances', desc: 'dX/dt, dS/dt, dP/dt. Usa la forma general: acum. = entrada − salida + generación.', color: '#1B4965' },
+            { n: '3', title: 'Identifica el régimen', desc: 'Fase exponencial (μ = cte), estado estacionario (d/dt = 0), o transitorio.', color: '#7B2D8E' },
             { n: '4', title: 'Verifica con unidades', desc: 'Análisis dimensional: g/L, h⁻¹, g/g. Cierra el balance de carbono o energía.', color: '#B45309' },
           ].map(tip => (
             <div

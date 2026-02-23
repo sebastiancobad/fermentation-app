@@ -14,7 +14,7 @@ const BOOKS = [
     type: 'Libro de texto',
     relevance: 'Fundamento de microbiología; capítulos 5–7 cubren fisiología y crecimiento microbiano.',
     tags: ['Microbiología', 'Fisiología', 'Crecimiento'],
-    color: '#4A6741',
+    color: '#2D6A4F',
     icon: '📗',
   },
   {
@@ -29,7 +29,7 @@ const BOOKS = [
     type: 'Texto de ingeniería',
     relevance: 'Referencia principal en ingeniería de bioprocesos. Cubre cinética, biorreactores y escalado.',
     tags: ['Cinética', 'Biorreactores', 'Escalado', 'Diseño'],
-    color: '#0F766E',
+    color: '#1B4965',
     icon: '📘',
   },
   {
@@ -44,7 +44,7 @@ const BOOKS = [
     type: 'Texto de ingeniería',
     relevance: 'Excelente tratamiento de operación de fermentadores industriales, control y optimización de procesos.',
     tags: ['Fermentación Industrial', 'Control', 'Fed-Batch', 'Scale-up'],
-    color: '#6D28D9',
+    color: '#7B2D8E',
     icon: '📙',
   },
   {
@@ -115,7 +115,7 @@ const ARTICLES = [
     doi: null,
     relevance: 'Tesis doctoral de Monod. Base experimental de toda la cinética microbiana moderna.',
     badge: 'TESIS DOCTORAL',
-    badgeColor: '#6D28D9',
+    badgeColor: '#7B2D8E',
   },
   {
     authors: 'Michaelis, L., Menten, M.L.',
@@ -126,7 +126,7 @@ const ARTICLES = [
     doi: null,
     relevance: 'Modelo de Michaelis-Menten para enzimas; base conceptual del modelo de Monod.',
     badge: 'CLÁSICO',
-    badgeColor: '#4A6741',
+    badgeColor: '#2D6A4F',
   },
   {
     authors: 'Pirt, S.J.',
@@ -137,7 +137,7 @@ const ARTICLES = [
     doi: '10.1098/rspb.1965.0069',
     relevance: 'Introduce el concepto de energía de mantenimiento (ms) en el balance de sustrato.',
     badge: 'CLÁSICO',
-    badgeColor: '#4A6741',
+    badgeColor: '#2D6A4F',
   },
 ]
 
@@ -148,7 +148,7 @@ const ONLINE_RESOURCES = [
     desc: 'Revista líder en ingeniería bioquímica. Artículos sobre cinética, biorreactores y escalado.',
     icon: '🔬',
     badge: 'Revista científica',
-    color: '#4A6741',
+    color: '#2D6A4F',
   },
   {
     name: 'MIT OpenCourseWare — Biochemical Engineering (10.28)',
@@ -156,7 +156,7 @@ const ONLINE_RESOURCES = [
     desc: 'Notas de clase, problem sets y exámenes del curso de ingeniería bioquímica del MIT. Acceso libre.',
     icon: '🎓',
     badge: 'Curso universitario',
-    color: '#0F766E',
+    color: '#1B4965',
   },
   {
     name: 'Coursera — Bioinformatics & Bioprocess Engineering',
@@ -164,7 +164,7 @@ const ONLINE_RESOURCES = [
     desc: 'Cursos online de universidades como UCSD, Penn, Johns Hopkins sobre biología computacional y bioprocesos.',
     icon: '💻',
     badge: 'MOOC',
-    color: '#6D28D9',
+    color: '#7B2D8E',
   },
   {
     name: 'NIST Chemistry WebBook',
@@ -216,13 +216,13 @@ export default function References() {
             onClick={() => setActiveSection(s.id)}
             className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all flex items-center gap-2 ${
               activeSection === s.id
-                ? 'bg-sage-700/10 border-sage-700/50 text-sage-800'
-                : 'bg-white border-sage-200 text-sage-500 hover:text-sage-800 hover:border-sage-400'
+                ? 'bg-forest-600/10 border-forest-600/50 text-forest-900'
+                : 'bg-white border-sage-200 text-sage-500 hover:text-forest-900 hover:border-sage-400'
             }`}
           >
             {s.label}
             <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              activeSection === s.id ? 'bg-sage-700/15 text-sage-700' : 'bg-sage-100 text-sage-400'
+              activeSection === s.id ? 'bg-forest-600/15 text-forest-600' : 'bg-sage-100 text-sage-400'
             }`}>
               {s.count}
             </span>
@@ -278,9 +278,9 @@ export default function References() {
                     <div>
                       <p className="text-xs font-semibold text-sage-400 uppercase mb-2">Datos de publicación</p>
                       <div className="space-y-1 text-xs font-mono">
-                        <div><span className="text-sage-400">ISBN: </span><span className="text-sage-700">{book.isbn}</span></div>
-                        <div><span className="text-sage-400">Páginas: </span><span className="text-sage-700">{book.pages}</span></div>
-                        <div><span className="text-sage-400">Editorial: </span><span className="text-sage-700">{book.publisher}</span></div>
+                        <div><span className="text-sage-400">ISBN: </span><span className="text-forest-600">{book.isbn}</span></div>
+                        <div><span className="text-sage-400">Páginas: </span><span className="text-forest-600">{book.pages}</span></div>
+                        <div><span className="text-sage-400">Editorial: </span><span className="text-forest-600">{book.publisher}</span></div>
                       </div>
                     </div>
                     <div>
@@ -304,7 +304,7 @@ export default function References() {
                   <div className="mt-3 pt-3 border-t border-sage-200">
                     <p className="text-xs font-semibold text-sage-400 uppercase mb-1">Formato APA</p>
                     <p className="text-xs font-mono text-sage-500 bg-sage-50 rounded-lg p-3 leading-relaxed border border-sage-200">
-                      {book.authors} ({book.year}). <em className="not-italic text-sage-700">{book.title}</em> ({book.edition}). {book.publisher}. {book.isbn}.
+                      {book.authors} ({book.year}). <em className="not-italic text-forest-600">{book.title}</em> ({book.edition}). {book.publisher}. {book.isbn}.
                     </p>
                   </div>
                 </div>
@@ -336,10 +336,10 @@ export default function References() {
                 <span className="text-xs font-mono text-sage-400">{art.year}</span>
               </div>
               <p className="text-xs text-sage-400">{art.authors} ({art.year}).</p>
-              <p className="font-bold text-sage-900 mt-1">{art.title}.</p>
+              <p className="font-bold text-forest-900 mt-1">{art.title}.</p>
               <p className="text-sm text-sage-600 mt-0.5 italic">{art.journal}, {art.vol}.</p>
               {art.doi && (
-                <p className="text-xs font-mono mt-1" style={{ color: '#4A6741' }}>DOI: {art.doi}</p>
+                <p className="text-xs font-mono mt-1" style={{ color: '#2D6A4F' }}>DOI: {art.doi}</p>
               )}
               <div
                 className="mt-3 rounded-lg p-3 border text-xs text-sage-500"
@@ -384,7 +384,7 @@ export default function References() {
                     >
                       {res.badge}
                     </span>
-                    <h4 className="font-semibold text-sage-900 text-sm mt-1 leading-snug">{res.name}</h4>
+                    <h4 className="font-semibold text-forest-900 text-sm mt-1 leading-snug">{res.name}</h4>
                   </div>
                 </div>
                 <p className="text-xs text-sage-500 leading-relaxed mb-3">{res.desc}</p>
@@ -400,7 +400,7 @@ export default function References() {
       {/* ─── Course Attribution ─── */}
       <div className="bg-white border border-sage-200 rounded-xl p-6 text-center">
         <div className="text-3xl mb-3">🎓</div>
-        <h3 className="font-bold text-sage-900 text-lg">Programa de Ingeniería de Bioprocesos (2024)</h3>
+        <h3 className="font-serif font-bold text-forest-900 text-lg">Programa de Ingeniería de Bioprocesos (2024)</h3>
         <p className="text-sage-500 mt-1 mb-4">
           Dr. Sebastián Coba Daza · Departamento de Ingeniería Química y Bioprocesos
         </p>
@@ -408,7 +408,7 @@ export default function References() {
           {['Cinética Microbiana', 'Modelo de Monod', 'Biorreactores STR', 'Fed-Batch', 'Escalado Industrial', 'CFD'].map(tag => (
             <span
               key={tag}
-              className="px-3 py-1 rounded-full border border-sage-700/25 text-sage-700 bg-sage-700/8"
+              className="px-3 py-1 rounded-full border border-forest-600/25 text-forest-600 bg-forest-600/8"
             >
               {tag}
             </span>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { SectionHeader } from './Dashboard'
+import Math from './Math'
 
 const BIOREACTOR_TYPES = [
   {
@@ -33,7 +34,7 @@ const BIOREACTOR_TYPES = [
   {
     id: 'fedbatch',
     name: 'Fed-Batch (Semi-continuo)',
-    color: '#4A6741',
+    color: '#2D6A4F',
     icon: '⬆️',
     description: 'El sustrato (y/o nutrientes) se alimentan de forma continua o intermitente, pero no hay efluente. El volumen aumenta con el tiempo.',
     advantages: [
@@ -64,7 +65,7 @@ const BIOREACTOR_TYPES = [
   {
     id: 'continuous',
     name: 'Continuo (CSTR / Quimiostato)',
-    color: '#0F766E',
+    color: '#1B4965',
     icon: '🔄',
     description: 'Entrada y salida continua de medio de cultivo. En estado estacionario, todas las variables permanecen constantes (μ = D).',
     advantages: [
@@ -95,9 +96,9 @@ const BIOREACTOR_TYPES = [
 
 const BIOREACTOR_COMPONENTS = [
   { id: 'vessel',     name: 'Tanque/Vessel',        desc: 'Recipiente de acero inoxidable 316L. Diseño de doble pared para control de T.', color: '#879186' },
-  { id: 'agitator',  name: 'Agitador / Impeller',   desc: 'Turbina Rushton o marine propeller. Genera turbulencia para kLa ≥ 200 h⁻¹.', color: '#4A6741' },
-  { id: 'sparger',   name: 'Sparger de Aire',        desc: 'Distribuidor de O₂ o N₂. Tamaño de burbuja crítico para transferencia de masa.', color: '#0F766E' },
-  { id: 'probes',    name: 'Sondas en Línea',        desc: 'pH, pO₂ disuelto, temperatura, turbidez (biomasa on-line).', color: '#6D28D9' },
+  { id: 'agitator',  name: 'Agitador / Impeller',   desc: 'Turbina Rushton o marine propeller. Genera turbulencia para kLa ≥ 200 h⁻¹.', color: '#2D6A4F' },
+  { id: 'sparger',   name: 'Sparger de Aire',        desc: 'Distribuidor de O₂ o N₂. Tamaño de burbuja crítico para transferencia de masa.', color: '#1B4965' },
+  { id: 'probes',    name: 'Sondas en Línea',        desc: 'pH, pO₂ disuelto, temperatura, turbidez (biomasa on-line).', color: '#7B2D8E' },
   { id: 'jacket',    name: 'Camisa de Temperatura',  desc: 'Agua/vapor para control exacto de T. ΔT < ±0.1°C en biofármacos.', color: '#B45309' },
   { id: 'controller',name: 'Sistema de Control (DCS)',desc: 'PID cascada para pH, pO₂, T. Comunicación OPC-UA para GMP.', color: '#DC2626' },
   { id: 'foam',      name: 'Antiespumante',           desc: 'Sensor capacitivo + bomba dosificadora. Evita colapso de espuma.', color: '#65A30D' },
@@ -147,7 +148,7 @@ export default function BioreactorModule() {
 
       {/* ─── Bioreactor Diagram (SVG) ─── */}
       <div className="bg-white rounded-xl border border-sage-200 p-6">
-        <h3 className="font-semibold text-sage-900 mb-2">Componentes de un Biorreactor Industrial</h3>
+        <h3 className="font-serif font-semibold text-forest-900 mb-2">Componentes de un Biorreactor Industrial</h3>
         <p className="text-xs text-sage-400 mb-5">
           Haz clic en un componente para ver sus especificaciones técnicas.
         </p>
@@ -176,7 +177,7 @@ export default function BioreactorModule() {
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: comp.color }} />
-                    <span className="font-medium text-sage-900">{comp.name}</span>
+                    <span className="font-medium text-forest-900">{comp.name}</span>
                   </div>
                   <p className="text-xs text-sage-500 leading-relaxed">{comp.desc}</p>
                 </button>
@@ -188,7 +189,7 @@ export default function BioreactorModule() {
 
       {/* ─── Type Selector ─── */}
       <div>
-        <h3 className="font-semibold text-sage-900 mb-4">Seleccionar Modo de Operación</h3>
+        <h3 className="font-serif font-semibold text-forest-900 mb-4">Seleccionar Modo de Operación</h3>
         <div className="flex flex-wrap gap-3 mb-6">
           {BIOREACTOR_TYPES.map(t => (
             <button
@@ -208,7 +209,7 @@ export default function BioreactorModule() {
               <span>{t.icon}</span>
               {t.name}
               {t.highlight && (
-                <span className="text-xs px-1.5 py-0.5 rounded font-bold bg-sage-700/10 text-sage-700">
+                <span className="text-xs px-1.5 py-0.5 rounded font-bold bg-forest-600/10 text-forest-600">
                   PREFERIDO
                 </span>
               )}
@@ -237,7 +238,7 @@ export default function BioreactorModule() {
                 <ul className="space-y-1.5">
                   {selectedType.advantages.map((a, i) => (
                     <li key={i} className="text-sm text-sage-600 flex items-start gap-2">
-                      <span className="text-sage-700 mt-0.5 flex-shrink-0">✓</span>
+                      <span className="text-forest-600 mt-0.5 flex-shrink-0">✓</span>
                       {a}
                     </li>
                   ))}
@@ -265,7 +266,7 @@ export default function BioreactorModule() {
                   <MetricBadge label="Complejidad control" value={selectedType.control} color={selectedType.color} />
                 </div>
                 <div className="mt-3 p-3 bg-sage-50 rounded-lg text-xs text-sage-500 border border-sage-200">
-                  <span className="font-semibold text-sage-700">Aplicaciones: </span>
+                  <span className="font-semibold text-forest-600">Aplicaciones: </span>
                   {selectedType.uses}
                 </div>
               </div>
@@ -277,7 +278,7 @@ export default function BioreactorModule() {
       {/* ─── Comparison Table ─── */}
       <div className="bg-white rounded-xl border border-sage-200 overflow-hidden">
         <div className="p-4 border-b border-sage-200">
-          <h3 className="font-semibold text-sage-900">Tabla Comparativa de Sistemas de Fermentación</h3>
+          <h3 className="font-serif font-semibold text-forest-900">Tabla Comparativa de Sistemas de Fermentación</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -304,10 +305,10 @@ export default function BioreactorModule() {
                 ['Estado estacionario', 'No', 'Pseudo-estac.', 'Sí (μ = D)'],
               ].map(([param, batch, fed, cont], i) => (
                 <tr key={param} className={i % 2 === 0 ? 'bg-white' : 'bg-sage-50/50'}>
-                  <td className="py-2.5 px-4 font-medium text-sage-700">{param}</td>
+                  <td className="py-2.5 px-4 font-medium text-forest-600">{param}</td>
                   <td className="py-2.5 px-4 text-center font-mono text-xs" style={{ color: '#B45309' }}>{batch}</td>
-                  <td className="py-2.5 px-4 text-center font-mono text-xs font-semibold" style={{ color: '#4A6741' }}>{fed}</td>
-                  <td className="py-2.5 px-4 text-center font-mono text-xs" style={{ color: '#0F766E' }}>{cont}</td>
+                  <td className="py-2.5 px-4 text-center font-mono text-xs font-semibold" style={{ color: '#2D6A4F' }}>{fed}</td>
+                  <td className="py-2.5 px-4 text-center font-mono text-xs" style={{ color: '#1B4965' }}>{cont}</td>
                 </tr>
               ))}
             </tbody>
@@ -320,7 +321,7 @@ export default function BioreactorModule() {
 
       {/* ─── Scaling Challenges ─── */}
       <div>
-        <h3 className="font-semibold text-sage-900 mb-1">Desafíos de Escalado (Scale-Up)</h3>
+        <h3 className="font-serif font-semibold text-forest-900 mb-1">Desafíos de Escalado (Scale-Up)</h3>
         <p className="text-sm text-sage-500 mb-5">
           El escalado de bioprocesos requiere ingeniería rigurosa. Los principios de similaridad
           geométrica, cinemática y dinámica raramente pueden satisfacerse simultáneamente.
@@ -336,7 +337,7 @@ export default function BioreactorModule() {
               }`}
             >
               <div className="flex items-start justify-between gap-2 mb-3">
-                <h4 className="font-semibold text-sage-900 text-sm">{ch.title}</h4>
+                <h4 className="font-semibold text-forest-900 text-sm">{ch.title}</h4>
                 <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${
                   ch.risk === 'alto'
                     ? 'bg-red-50 text-red-600 border border-red-200'
@@ -350,7 +351,7 @@ export default function BioreactorModule() {
             </div>
           ))}
         </div>
-        <div className="mt-4 bg-sage-700/5 border border-sage-700/20 rounded-xl p-4 text-sm text-sage-700">
+        <div className="mt-4 bg-forest-600/5 border border-forest-600/20 rounded-xl p-4 text-sm text-forest-600">
           <strong>Enfoque moderno:</strong> La Dinámica de Fluidos Computacional (CFD) combinada con
           gemelos digitales permite simular gradientes de concentración, temperatura y shear stress
           antes de construir reactores físicos, reduciendo tiempo y costo de desarrollo.
@@ -398,12 +399,12 @@ function BioreactorSVG({ activeComponent, setActiveComponent }) {
         <rect x="43" y="71" width="134" height="178" rx="13" ry="13" />
       </clipPath>
       <rect x="43" y="160" width="134" height="89" rx="0"
-        fill="#4A674122" clipPath="url(#vesselClip)" />
-      <text x="110" y="210" textAnchor="middle" fill="#4A674166" fontSize="9">caldo</text>
+        fill="#2D6A4F22" clipPath="url(#vesselClip)" />
+      <text x="110" y="210" textAnchor="middle" fill="#2D6A4F66" fontSize="9">caldo</text>
 
       {/* Agitator shaft */}
       <line x1="110" y1="70" x2="110" y2="220"
-        stroke={getStroke('agitator', '#4A6741')}
+        stroke={getStroke('agitator', '#2D6A4F')}
         strokeWidth={highlight('agitator') ? 3 : 2}
         className="cursor-pointer"
         onClick={() => setActiveComponent(c => c === 'agitator' ? null : 'agitator')}
@@ -415,17 +416,17 @@ function BioreactorSVG({ activeComponent, setActiveComponent }) {
           className="cursor-pointer"
         >
           <line x1="75" y1={y} x2="145" y2={y}
-            stroke={getStroke('agitator', '#4A6741')}
+            stroke={getStroke('agitator', '#2D6A4F')}
             strokeWidth={highlight('agitator') ? 3 : 2}
           />
           <rect x="72" y={y - 6} width="16" height="12" rx="2"
-            fill={getFill('agitator', '#4A674122')}
-            stroke={getStroke('agitator', '#4A6741')}
+            fill={getFill('agitator', '#2D6A4F22')}
+            stroke={getStroke('agitator', '#2D6A4F')}
             strokeWidth="1"
           />
           <rect x="132" y={y - 6} width="16" height="12" rx="2"
-            fill={getFill('agitator', '#4A674122')}
-            stroke={getStroke('agitator', '#4A6741')}
+            fill={getFill('agitator', '#2D6A4F22')}
+            stroke={getStroke('agitator', '#2D6A4F')}
             strokeWidth="1"
           />
         </g>
@@ -438,15 +439,15 @@ function BioreactorSVG({ activeComponent, setActiveComponent }) {
       {/* Sparger */}
       <g onClick={() => setActiveComponent(c => c === 'sparger' ? null : 'sparger')} className="cursor-pointer">
         <ellipse cx="110" cy="240" rx="25" ry="5"
-          fill={getFill('sparger', '#0F766E11')}
-          stroke={getStroke('sparger', '#0F766E')}
+          fill={getFill('sparger', '#1B496511')}
+          stroke={getStroke('sparger', '#1B4965')}
           strokeWidth={highlight('sparger') ? 2 : 1}
         />
         <line x1="110" y1="245" x2="110" y2="270"
-          stroke={getStroke('sparger', '#0F766E')} strokeWidth="2" />
+          stroke={getStroke('sparger', '#1B4965')} strokeWidth="2" />
         {[95, 102, 110, 118, 125].map(x => (
           <circle key={x} cx={x} cy="233" r="2"
-            fill={getStroke('sparger', '#0F766E')} opacity="0.6" />
+            fill={getStroke('sparger', '#1B4965')} opacity="0.6" />
         ))}
         <text x="110" y="282" textAnchor="middle" fill="#0F766E" fontSize="7">Sparger O₂</text>
       </g>
@@ -454,13 +455,13 @@ function BioreactorSVG({ activeComponent, setActiveComponent }) {
       {/* Probes (side) */}
       <g onClick={() => setActiveComponent(c => c === 'probes' ? null : 'probes')} className="cursor-pointer">
         <rect x="15" y="130" width="27" height="8" rx="2"
-          fill={getFill('probes', '#6D28D911')}
-          stroke={getStroke('probes', '#6D28D9')}
+          fill={getFill('probes', '#7B2D8E11')}
+          stroke={getStroke('probes', '#7B2D8E')}
           strokeWidth={highlight('probes') ? 2 : 1}
         />
         <line x1="42" y1="134" x2="56" y2="134"
-          stroke={getStroke('probes', '#6D28D9')} strokeWidth="1.5" />
-        <text x="12" y="127" fill="#6D28D9" fontSize="7">pH/pO₂</text>
+          stroke={getStroke('probes', '#7B2D8E')} strokeWidth="1.5" />
+        <text x="12" y="127" fill="#7B2D8E" fontSize="7">pH/pO₂</text>
       </g>
 
       {/* Foam probe + pump */}

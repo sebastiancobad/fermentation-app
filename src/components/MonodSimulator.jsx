@@ -4,6 +4,18 @@ import {
   Tooltip, Legend, ResponsiveContainer, ReferenceLine,
 } from 'recharts'
 import { SectionHeader } from './Dashboard'
+import Math from './Math'
+
+// ─── Audit-compliant colors ──────────────────────────────────────────────────
+const COLOR = {
+  mu:    '#2D6A4F',  // forest-600 — main curve / μ
+  ks:    '#1B4965',  // navy-500   — Ks references
+  amber: '#D4A017',  // amber-600  — saturation zone
+  plum:  '#7B2D8E',  // plum-500   — LB slope
+  grid:  '#D8DED4',
+  tick:  '#879186',
+  axis:  '#879186',
+}
 
 // ─── Model calculations ───────────────────────────────────────────────────────
 function monod(S, muMax, Ks) {
@@ -21,13 +33,12 @@ function generateMonodCurve(muMax, Ks, Smax = 10) {
   return data
 }
 
-// Lineweaver-Burk: 1/μ = (Ks/μmax)(1/S) + 1/μmax
 function generateLBData(muMax, Ks) {
   const data = []
   const Svals = [0.2, 0.4, 0.6, 0.8, 1.0, 1.5, 2.0, 3.0, 5.0, 8.0]
   Svals.forEach(S => {
     const mu_true = monod(S, muMax, Ks)
-    const noise = (Math.random() - 0.5) * 0.04 * mu_true
+    const noise = (window.Math.random() - 0.5) * 0.04 * mu_true
     const mu_obs = mu_true + noise
     data.push({
       invS: parseFloat((1 / S).toFixed(4)),
@@ -63,7 +74,7 @@ const MonodTooltip = ({ active, payload, muMax, Ks }) => {
   return (
     <div className="custom-tooltip">
       <div className="font-mono text-xs text-sage-400">S = {d.S?.toFixed(3)} g·L⁻¹</div>
-      <div className="font-semibold font-mono text-sage-700">μ = {d.mu?.toFixed(4)} h⁻¹</div>
+      <div className="font-semibold font-mono" style={{ color: COLOR.mu }}>μ = {d.mu?.toFixed(4)} h⁻¹</div>
       <div className="text-xs text-sage-500 mt-1">
         μ/μmax = {d.mu && muMax ? (d.mu / muMax * 100).toFixed(1) : '—'}%
       </div>
@@ -83,7 +94,7 @@ const LBTooltip = ({ active, payload }) => {
   return (
     <div className="custom-tooltip">
       <div className="font-mono text-xs text-sage-400">1/S = {d.invS?.toFixed(3)} L·g⁻¹</div>
-      <div className="font-semibold font-mono text-sage-700">1/μ = {d.invMu?.toFixed(4)} h</div>
+      <div className="font-semibold font-mono" style={{ color: COLOR.ks }}>1/μ = {d.invMu?.toFixed(4)} h</div>
       <div className="text-xs text-sage-500 mt-1">S = {d.S?.toFixed(2)} g/L</div>
     </div>
   )
@@ -93,7 +104,7 @@ const LBTooltip = ({ active, payload }) => {
 export default function MonodSimulator() {
   const [muMax, setMuMax] = useState(0.50)
   const [Ks, setKs] = useState(0.20)
-  const [view, setView] = useState('monod') // 'monod' | 'lb'
+  const [view, setView] = useState('monod')
   const [Smax, setSmax] = useState(5)
   const [showAnnotations, setShowAnnotations] = useState(true)
 
@@ -109,19 +120,6 @@ export default function MonodSimulator() {
   const lb_int_y   = (1 / muMax).toFixed(4)
   const lb_int_x   = (-1 / Ks).toFixed(4)
 
-  // Chart colours that work on a white background
-  const C = {
-    grid:    '#D8DED4',
-    tick:    '#879186',
-    axis:    '#879186',
-    mu:      '#4A6741',  // sage-700 — main curve
-    refGreen:'#4A6741',
-    refTeal: '#0F766E',  // teal-700
-    refAmber:'#B45309',  // amber-700
-    lb:      '#0F766E',  // teal-700 — LB line
-    scatter: '#4A6741',  // sage-700 — scatter dots
-  }
-
   return (
     <div className="space-y-8">
       <SectionHeader
@@ -132,18 +130,17 @@ export default function MonodSimulator() {
 
       {/* ─── Parameter Controls ─── */}
       <div className="bg-white rounded-xl border border-sage-200 p-6">
-        <h3 className="font-semibold text-sage-900 mb-1">Parámetros Cinéticos de Monod</h3>
+        <h3 className="font-serif font-semibold text-forest-900 mb-1">Parámetros Cinéticos de Monod</h3>
         <p className="text-xs text-sage-400 mb-5">
           Ajusta los parámetros del modelo: la curva se actualiza en tiempo real.
         </p>
         <div className="grid sm:grid-cols-3 gap-8">
-          {/* μmax */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="text-sm font-medium text-sage-700">
-                μ<sub>max</sub>
+              <label className="text-sm font-medium" style={{ color: COLOR.mu }}>
+                <Math tex={String.raw`\mu_{\max}`} />
               </label>
-              <span className="font-mono font-bold text-sage-700 text-lg">
+              <span className="font-mono font-bold text-lg" style={{ color: COLOR.mu }}>
                 {muMax.toFixed(2)} h⁻¹
               </span>
             </div>
@@ -159,13 +156,12 @@ export default function MonodSimulator() {
             </p>
           </div>
 
-          {/* Ks */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="text-sm font-medium text-sage-700">
-                K<sub>s</sub>
+              <label className="text-sm font-medium" style={{ color: COLOR.ks }}>
+                <Math tex={String.raw`K_s`} />
               </label>
-              <span className="font-mono font-bold text-teal-700 text-lg">
+              <span className="font-mono font-bold text-lg" style={{ color: COLOR.ks }}>
                 {Ks.toFixed(3)} g·L⁻¹
               </span>
             </div>
@@ -181,11 +177,12 @@ export default function MonodSimulator() {
             </p>
           </div>
 
-          {/* Smax */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="text-sm font-medium text-sage-700">S<sub>max</sub> (eje)</label>
-              <span className="font-mono font-bold text-violet-700 text-lg">{Smax} g·L⁻¹</span>
+              <label className="text-sm font-medium" style={{ color: COLOR.amber }}>
+                <Math tex={String.raw`S_{\max}`} /> (eje)
+              </label>
+              <span className="font-mono font-bold text-lg" style={{ color: COLOR.amber }}>{Smax} g·L⁻¹</span>
             </div>
             <input
               type="range" min="1" max="20" step="0.5"
@@ -199,15 +196,14 @@ export default function MonodSimulator() {
           </div>
         </div>
 
-        {/* Derived parameters */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-5 border-t border-sage-200">
           {[
-            { label: 'μmax/2', val: halfSat_mu, unit: 'h⁻¹', color: '#4A6741' },
-            { label: 'Ks (= S @ μmax/2)', val: Ks.toFixed(3), unit: 'g/L', color: '#0F766E' },
-            { label: 'Pendiente LB (Ks/μmax)', val: lb_slope, unit: '', color: '#6D28D9' },
-            { label: 'Intercep. Y LB (1/μmax)', val: lb_int_y, unit: 'h', color: '#B45309' },
+            { label: 'μmax/2', val: halfSat_mu, unit: 'h⁻¹', color: COLOR.mu },
+            { label: 'Ks (= S @ μmax/2)', val: Ks.toFixed(3), unit: 'g/L', color: COLOR.ks },
+            { label: 'Pendiente LB (Ks/μmax)', val: lb_slope, unit: '', color: COLOR.plum },
+            { label: 'Intercep. Y LB (1/μmax)', val: lb_int_y, unit: 'h', color: COLOR.amber },
           ].map(p => (
-            <div key={p.label} className="text-center bg-sage-50 rounded-lg p-3 border border-sage-200">
+            <div key={p.label} className="text-center bg-warm-alt rounded-lg p-3 border border-sage-200">
               <div className="font-mono font-bold" style={{ color: p.color }}>
                 {p.val} <span className="text-xs text-sage-400">{p.unit}</span>
               </div>
@@ -223,8 +219,8 @@ export default function MonodSimulator() {
           onClick={() => setView('monod')}
           className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
             view === 'monod'
-              ? 'bg-sage-700/10 border-sage-700 text-sage-800'
-              : 'bg-white border-sage-200 text-sage-500 hover:text-sage-800 hover:border-sage-400'
+              ? 'bg-forest-600/10 border-forest-600 text-forest-700'
+              : 'bg-white border-sage-200 text-sage-500 hover:text-forest-600 hover:border-sage-300'
           }`}
         >
           Curva de Monod (μ vs S)
@@ -233,8 +229,8 @@ export default function MonodSimulator() {
           onClick={() => setView('lb')}
           className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
             view === 'lb'
-              ? 'bg-teal-700/10 border-teal-700 text-teal-800'
-              : 'bg-white border-sage-200 text-sage-500 hover:text-sage-800 hover:border-sage-400'
+              ? 'bg-navy-500/10 border-navy-500 text-navy-500'
+              : 'bg-white border-sage-200 text-sage-500 hover:text-navy-500 hover:border-sage-300'
           }`}
         >
           Linealización Lineweaver-Burk (1/μ vs 1/S)
@@ -244,7 +240,7 @@ export default function MonodSimulator() {
             type="checkbox"
             checked={showAnnotations}
             onChange={e => setShowAnnotations(e.target.checked)}
-            className="accent-sage-700"
+            className="accent-forest-600"
           />
           <span className="text-sm text-sage-600">Anotaciones</span>
         </label>
@@ -254,8 +250,8 @@ export default function MonodSimulator() {
       {view === 'monod' && (
         <div className="bg-white rounded-xl border border-sage-200 p-5">
           <div className="flex items-center justify-between mb-1">
-            <h3 className="text-sm font-semibold text-sage-900">
-              Ecuación de Monod: μ = μmax · S / (Ks + S)
+            <h3 className="text-sm font-serif font-semibold text-forest-900">
+              Ecuación de Monod: <Math tex={String.raw`\mu = \mu_{\max} \cdot \frac{S}{K_s + S}`} />
             </h3>
             <div className="font-mono text-xs text-sage-400">
               μmax={muMax} h⁻¹  |  Ks={Ks} g/L
@@ -266,30 +262,30 @@ export default function MonodSimulator() {
           </p>
           <ResponsiveContainer width="100%" height={380}>
             <LineChart data={monodData} margin={{ top: 10, right: 30, bottom: 25, left: 15 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={C.grid} />
+              <CartesianGrid strokeDasharray="3 3" stroke={COLOR.grid} />
 
               {showAnnotations && (
                 <>
                   <ReferenceLine
                     y={muMax / 2}
-                    stroke={C.refTeal}
+                    stroke={COLOR.ks}
                     strokeDasharray="5 5"
                     strokeOpacity={0.7}
-                    label={{ value: `μmax/2 = ${(muMax/2).toFixed(2)}`, position: 'insideRight', fill: C.refTeal, fontSize: 10 }}
+                    label={{ value: `μmax/2 = ${(muMax/2).toFixed(2)}`, position: 'insideRight', fill: COLOR.ks, fontSize: 10 }}
                   />
                   <ReferenceLine
                     x={Ks}
-                    stroke={C.refTeal}
+                    stroke={COLOR.ks}
                     strokeDasharray="5 5"
                     strokeOpacity={0.7}
-                    label={{ value: `Ks = ${Ks}`, position: 'insideTopRight', fill: C.refTeal, fontSize: 10 }}
+                    label={{ value: `Ks = ${Ks}`, position: 'insideTopRight', fill: COLOR.ks, fontSize: 10 }}
                   />
                   <ReferenceLine
                     y={muMax}
-                    stroke={C.refGreen}
+                    stroke={COLOR.mu}
                     strokeDasharray="8 4"
                     strokeOpacity={0.5}
-                    label={{ value: `μmax = ${muMax}`, position: 'insideTopLeft', fill: C.refGreen, fontSize: 10 }}
+                    label={{ value: `μmax = ${muMax}`, position: 'insideTopLeft', fill: COLOR.mu, fontSize: 10 }}
                   />
                 </>
               )}
@@ -298,15 +294,15 @@ export default function MonodSimulator() {
                 dataKey="S"
                 type="number"
                 domain={[0, Smax]}
-                stroke={C.axis}
-                tick={{ fill: C.tick, fontSize: 11 }}
-                label={{ value: 'Concentración de sustrato S (g·L⁻¹)', position: 'insideBottom', offset: -12, fill: C.axis, fontSize: 12 }}
+                stroke={COLOR.axis}
+                tick={{ fill: COLOR.tick, fontSize: 11 }}
+                label={{ value: 'Concentración de sustrato S (g·L⁻¹)', position: 'insideBottom', offset: -12, fill: COLOR.axis, fontSize: 12 }}
               />
               <YAxis
                 domain={[0, muMax * 1.1]}
-                stroke={C.axis}
-                tick={{ fill: C.tick, fontSize: 11 }}
-                label={{ value: 'μ (h⁻¹)', angle: -90, position: 'insideLeft', offset: 20, fill: C.axis, fontSize: 12 }}
+                stroke={COLOR.axis}
+                tick={{ fill: COLOR.tick, fontSize: 11 }}
+                label={{ value: 'μ (h⁻¹)', angle: -90, position: 'insideLeft', offset: 20, fill: COLOR.axis, fontSize: 12 }}
               />
               <Tooltip content={<MonodTooltip muMax={muMax} Ks={Ks} />} />
 
@@ -314,23 +310,23 @@ export default function MonodSimulator() {
                 type="monotone"
                 dataKey="mu"
                 name="μ (Monod)"
-                stroke={C.mu}
+                stroke={COLOR.mu}
                 strokeWidth={3}
                 dot={false}
-                activeDot={{ r: 5, fill: C.mu }}
+                activeDot={{ r: 5, fill: COLOR.mu }}
               />
             </LineChart>
           </ResponsiveContainer>
 
           {showAnnotations && (
             <div className="mt-4 grid sm:grid-cols-3 gap-3 text-xs">
-              <AnnotationBox color="#4A6741" title="Zona S ≪ Ks (primer orden)">
+              <AnnotationBox color={COLOR.mu} title="Zona S ≪ Ks (primer orden)">
                 μ ≈ (μmax/Ks) · S → lineal. El sustrato es limitante y cualquier incremento aumenta μ significativamente.
               </AnnotationBox>
-              <AnnotationBox color="#0F766E" title="Zona S = Ks (semisaturación)">
+              <AnnotationBox color={COLOR.ks} title="Zona S = Ks (semisaturación)">
                 μ = μmax/2. Punto de inflexión clave para estimar Ks experimentalmente.
               </AnnotationBox>
-              <AnnotationBox color="#B45309" title="Zona S ≫ Ks (orden cero)">
+              <AnnotationBox color={COLOR.amber} title="Zona S ≫ Ks (orden cero)">
                 μ ≈ μmax. El sustrato no es limitante; μ se satura. Añadir más S no mejora la cinética.
               </AnnotationBox>
             </div>
@@ -342,8 +338,8 @@ export default function MonodSimulator() {
       {view === 'lb' && (
         <div className="bg-white rounded-xl border border-sage-200 p-5">
           <div className="mb-1">
-            <h3 className="text-sm font-semibold text-sage-900">
-              Gráfica de Lineweaver-Burk: 1/μ = (Ks/μmax)·(1/S) + 1/μmax
+            <h3 className="text-sm font-serif font-semibold text-forest-900">
+              Gráfica de Lineweaver-Burk: <Math tex={String.raw`\frac{1}{\mu} = \frac{K_s}{\mu_{\max}} \cdot \frac{1}{S} + \frac{1}{\mu_{\max}}`} />
             </h3>
           </div>
           <p className="text-xs text-sage-400 mb-4">
@@ -352,23 +348,23 @@ export default function MonodSimulator() {
           </p>
           <ResponsiveContainer width="100%" height={380}>
             <LineChart margin={{ top: 10, right: 30, bottom: 25, left: 15 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={C.grid} />
+              <CartesianGrid strokeDasharray="3 3" stroke={COLOR.grid} />
 
               {showAnnotations && (
                 <>
                   <ReferenceLine
                     y={1 / muMax}
-                    stroke={C.refGreen}
+                    stroke={COLOR.mu}
                     strokeDasharray="5 5"
                     strokeOpacity={0.6}
-                    label={{ value: `1/μmax = ${lb_int_y}`, position: 'insideRight', fill: C.refGreen, fontSize: 10 }}
+                    label={{ value: `1/μmax = ${lb_int_y}`, position: 'insideRight', fill: COLOR.mu, fontSize: 10 }}
                   />
                   <ReferenceLine
                     x={-1 / Ks}
-                    stroke={C.refTeal}
+                    stroke={COLOR.ks}
                     strokeDasharray="5 5"
                     strokeOpacity={0.6}
-                    label={{ value: `−1/Ks = ${lb_int_x}`, position: 'insideTopRight', fill: C.refTeal, fontSize: 10 }}
+                    label={{ value: `−1/Ks = ${lb_int_x}`, position: 'insideTopRight', fill: COLOR.ks, fontSize: 10 }}
                   />
                 </>
               )}
@@ -377,15 +373,15 @@ export default function MonodSimulator() {
                 dataKey="invS"
                 type="number"
                 domain={['dataMin - 0.5', 'dataMax + 0.2']}
-                stroke={C.axis}
-                tick={{ fill: C.tick, fontSize: 11 }}
-                label={{ value: '1/S (L·g⁻¹)', position: 'insideBottom', offset: -12, fill: C.axis, fontSize: 12 }}
+                stroke={COLOR.axis}
+                tick={{ fill: COLOR.tick, fontSize: 11 }}
+                label={{ value: '1/S (L·g⁻¹)', position: 'insideBottom', offset: -12, fill: COLOR.axis, fontSize: 12 }}
               />
               <YAxis
-                stroke={C.axis}
-                tick={{ fill: C.tick, fontSize: 11 }}
+                stroke={COLOR.axis}
+                tick={{ fill: COLOR.tick, fontSize: 11 }}
                 domain={[0, 'auto']}
-                label={{ value: '1/μ (h)', angle: -90, position: 'insideLeft', offset: 20, fill: C.axis, fontSize: 12 }}
+                label={{ value: '1/μ (h)', angle: -90, position: 'insideLeft', offset: 20, fill: COLOR.axis, fontSize: 12 }}
               />
               <Tooltip content={<LBTooltip />} />
               <Legend wrapperStyle={{ fontSize: '12px', color: '#879186' }} />
@@ -395,7 +391,7 @@ export default function MonodSimulator() {
                 type="linear"
                 dataKey="invMu_line"
                 name="Regresión LB"
-                stroke={C.lb}
+                stroke={COLOR.ks}
                 strokeWidth={2}
                 dot={false}
               />
@@ -404,36 +400,37 @@ export default function MonodSimulator() {
                 type="linear"
                 dataKey="invMu"
                 name="Datos 1/μ"
-                stroke={C.scatter}
+                stroke={COLOR.mu}
                 strokeWidth={0}
-                dot={{ r: 5, fill: C.scatter, stroke: '#fff', strokeWidth: 2 }}
+                dot={{ r: 5, fill: COLOR.mu, stroke: '#fff', strokeWidth: 2 }}
               />
             </LineChart>
           </ResponsiveContainer>
 
-          {/* LB equations */}
           <div className="mt-4 grid sm:grid-cols-2 gap-4">
-            <div className="bg-sage-50 rounded-lg p-4 font-mono text-sm border border-sage-200">
-              <div className="text-sage-400 text-xs mb-2">// Ecuación de la recta</div>
-              <div className="text-teal-700">1/μ = ({lb_slope}) · (1/S) + ({lb_int_y})</div>
-              <div className="text-sage-400 text-xs mt-3 mb-1">// Parámetros estimados</div>
-              <div className="text-sage-700">μmax = 1/intercepto_y = {muMax.toFixed(3)} h⁻¹</div>
-              <div className="text-sage-700">Ks = pendiente × μmax = {Ks.toFixed(3)} g/L</div>
+            <div className="bg-warm-code rounded-lg p-4 border border-sage-200">
+              <div className="text-xs font-semibold text-forest-600 mb-2">Ecuación de la recta</div>
+              <Math tex={String.raw`\frac{1}{\mu} = (${lb_slope}) \cdot \frac{1}{S} + (${lb_int_y})`} display />
+              <div className="mt-3 text-xs text-sage-500 space-y-1">
+                <div><Math tex={String.raw`\mu_{\max} = \frac{1}{\text{intercepto}_y} = ${muMax.toFixed(3)} \;\text{h}^{-1}`} /></div>
+                <div><Math tex={String.raw`K_s = \text{pendiente} \times \mu_{\max} = ${Ks.toFixed(3)} \;\text{g/L}`} /></div>
+              </div>
             </div>
             <div className="space-y-2">
-              <div className="bg-sage-50 rounded-lg p-3 text-xs border border-sage-200">
-                <div className="text-violet-700 font-semibold mb-1">Intersección eje Y</div>
-                <div className="font-mono text-sage-600">1/μ cuando 1/S → 0 (S → ∞)</div>
-                <div className="font-mono text-sage-700">= 1/μmax = {lb_int_y} h</div>
+              <div className="bg-warm-alt rounded-lg p-3 text-xs border border-sage-200">
+                <div className="font-semibold mb-1" style={{ color: COLOR.plum }}>Intersección eje Y</div>
+                <div className="text-sage-500">1/μ cuando 1/S → 0 (S → ∞)</div>
+                <div className="font-mono mt-1" style={{ color: COLOR.mu }}>= 1/μmax = {lb_int_y} h</div>
               </div>
-              <div className="bg-sage-50 rounded-lg p-3 text-xs border border-sage-200">
-                <div className="text-teal-700 font-semibold mb-1">Intersección eje X</div>
-                <div className="font-mono text-sage-600">1/S cuando 1/μ = 0</div>
-                <div className="font-mono text-teal-700">= −1/Ks = {lb_int_x} L/g</div>
+              <div className="bg-warm-alt rounded-lg p-3 text-xs border border-sage-200">
+                <div className="font-semibold mb-1" style={{ color: COLOR.ks }}>Intersección eje X</div>
+                <div className="text-sage-500">1/S cuando 1/μ = 0</div>
+                <div className="font-mono mt-1" style={{ color: COLOR.ks }}>= −1/Ks = {lb_int_x} L/g</div>
               </div>
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
-                ⚠ El gráfico LB amplía el error experimental en las regiones de bajo S (alta 1/S).
-                Preferir métodos no lineales de estimación (Marquardt-Levenberg) en la práctica.
+              <div className="validation-warning warn">
+                <span>⚠</span>
+                <span>El gráfico LB amplía el error experimental en las regiones de bajo S (alta 1/S).
+                Preferir métodos no lineales de estimación (Marquardt-Levenberg) en la práctica.</span>
               </div>
             </div>
           </div>
@@ -441,40 +438,46 @@ export default function MonodSimulator() {
       )}
 
       {/* ─── Theory Box ─── */}
-      <div className="bg-white border border-sage-200 rounded-xl p-6">
-        <h3 className="font-bold text-sage-900 mb-4">Base Teórica del Modelo de Monod</h3>
+      <div className="bg-white border border-forest-600/15 rounded-xl p-6">
+        <h3 className="font-serif font-bold text-forest-900 mb-4">Base Teórica del Modelo de Monod</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <p className="text-sm text-sage-500 leading-relaxed mb-4">
-              El modelo propuesto por <strong className="text-sage-800">Jacques Monod (1949)</strong> describe
+              El modelo propuesto por <strong className="text-forest-900">Jacques Monod (1949)</strong> describe
               la dependencia de la tasa de crecimiento específico con la concentración del sustrato
               limitante. Es empírico —no mecanístico— pero constituye el fundamento de la cinética
               microbiana aplicada.
             </p>
-            <div className="formula-block text-base">
-              μ = μmax · S / (Ks + S)
-            </div>
+            <Math tex={String.raw`\mu = \mu_{\max} \cdot \frac{S}{K_s + S}`} display />
             <div className="mt-3 space-y-2 text-xs text-sage-500">
-              <p><strong className="text-sage-700">μ</strong>: tasa de crecimiento específico (h⁻¹)</p>
-              <p><strong className="text-sage-700">μmax</strong>: tasa máxima (sustrato no limitante)</p>
-              <p><strong className="text-sage-700">S</strong>: concentración del sustrato limitante (g/L)</p>
-              <p><strong className="text-sage-700">Ks</strong>: constante de semisaturación (g/L) — S para μ = μmax/2</p>
+              <p><strong style={{ color: COLOR.mu }}>μ</strong>: tasa de crecimiento específico (h⁻¹)</p>
+              <p><strong style={{ color: COLOR.mu }}>μmax</strong>: tasa máxima (sustrato no limitante)</p>
+              <p><strong style={{ color: COLOR.amber }}>S</strong>: concentración del sustrato limitante (g/L)</p>
+              <p><strong style={{ color: COLOR.ks }}>Ks</strong>: constante de semisaturación (g/L) — S para μ = μmax/2</p>
             </div>
           </div>
           <div>
             <p className="text-sm text-sage-500 mb-3">
-              <strong className="text-sage-800">Casos límite:</strong>
+              <strong className="text-forest-900">Casos límite:</strong>
             </p>
-            <div className="space-y-2 font-mono text-xs bg-sage-50 rounded-lg p-4 border border-sage-200">
-              <div className="text-sage-400">{'// Orden 1 (S << Ks):'}</div>
-              <div className="text-sage-700">μ ≈ (μmax/Ks) · S</div>
-              <div className="text-sage-400 mt-2">{'// Semisaturación (S = Ks):'}</div>
-              <div className="text-teal-700">μ = μmax/2</div>
-              <div className="text-sage-400 mt-2">{'// Orden 0 (S >> Ks):'}</div>
-              <div className="text-violet-700">μ ≈ μmax (saturado)</div>
-              <div className="text-sage-400 mt-3">{'// Balance de masa biomasa:'}</div>
-              <div className="text-amber-700">dX/dt = (μ − kd) · X</div>
-              <div className="text-amber-700">dS/dt = −(μ/Yx/s) · X − ms·X</div>
+            <div className="space-y-3">
+              <div className="rounded-lg border border-sage-200 bg-warm-code p-4">
+                <div className="text-xs font-semibold text-forest-600 mb-2">Orden 1 (S ≪ Ks)</div>
+                <Math tex={String.raw`\mu \approx \frac{\mu_{\max}}{K_s} \cdot S`} display />
+              </div>
+              <div className="rounded-lg border border-sage-200 bg-warm-code p-4">
+                <div className="text-xs font-semibold" style={{ color: COLOR.ks }}>Semisaturación (S = Ks)</div>
+                <Math tex={String.raw`\mu = \frac{\mu_{\max}}{2}`} display />
+              </div>
+              <div className="rounded-lg border border-sage-200 bg-warm-code p-4">
+                <div className="text-xs font-semibold" style={{ color: COLOR.amber }}>Orden 0 (S ≫ Ks)</div>
+                <Math tex={String.raw`\mu \approx \mu_{\max} \;\text{(saturado)}`} display />
+              </div>
+              <div className="rounded-lg border border-sage-200 bg-warm-code p-4">
+                <div className="text-xs font-semibold" style={{ color: COLOR.plum }}>Balance de masa biomasa</div>
+                <Math tex={String.raw`\frac{dX}{dt} = (\mu - k_d) \cdot X`} display />
+                <Math tex={String.raw`\frac{dS}{dt} = -\frac{\mu}{Y_{x/s}} \cdot X - m_s \cdot X`} display className="mt-1" />
+              </div>
             </div>
           </div>
         </div>
