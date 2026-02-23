@@ -1,221 +1,154 @@
 import React from 'react'
+import { Activity, Beaker, Factory, Leaf, ArrowRight } from 'lucide-react'
 
 const MICROORGANISMS = [
-  {
-    name: 'Bacterias',
-    examples: 'Lactobacillus, E. coli, Bacillus',
-    uses: 'Yogur, ácido láctico, enzimas',
-    doubling: '20–60 min',
-    color: 'from-emerald-600 to-emerald-800',
-    icon: '🦠',
-    detail: 'Procariotas. Metabolismo versátil; aerobias, anaerobias o facultativas. Alta velocidad de crecimiento.',
-  },
-  {
-    name: 'Levaduras',
-    examples: 'Saccharomyces cerevisiae, Pichia pastoris',
-    uses: 'Cerveza, vino, etanol, insulina recombinante',
-    doubling: '90–120 min',
-    color: 'from-cyan-600 to-cyan-800',
-    icon: '🍺',
-    detail: 'Hongos unicelulares eucariotas. Fermentación alcohólica clásica y expresión de proteínas recombinantes.',
-  },
-  {
-    name: 'Hongos Filamentosos',
-    examples: 'Aspergillus niger, Penicillium chrysogenum',
-    uses: 'Ácido cítrico, penicilina, enzimas industriales',
-    doubling: '4–8 h',
-    color: 'from-violet-600 to-violet-800',
-    icon: '🧫',
-    detail: 'Eucariotas multicelulares. Crecimiento apical; secretan enzimas extracelulares de alto valor.',
-  },
+  { name: 'Bacterias', uses: 'Yogur, ácido láctico', time: '20–60 min', icon: '🦠' },
+  { name: 'Levaduras', uses: 'Etanol, insulina', time: '90–120 min', icon: '🍺' },
+  { name: 'Hongos', uses: 'Penicilina, enzimas', time: '4–8 h', icon: '🧫' },
 ]
 
 const APPLICATIONS = [
-  { sector: 'Alimentos & Bebidas', examples: ['Cerveza', 'Vino', 'Yogur', 'Queso', 'Pan'], color: '#f59e0b', pct: 35 },
-  { sector: 'Farmacéutica', examples: ['Penicilina', 'Insulina', 'Estatinas', 'Eritropoyetina'], color: '#22c55e', pct: 28 },
-  { sector: 'Biocombustibles', examples: ['Etanol', 'Butanol', 'Biogas', 'Biodiesel'], color: '#06b6d4', pct: 20 },
-  { sector: 'Enzimas & Proteínas', examples: ['Amilasas', 'Proteasas', 'Lipasas', 'Anticuerpos mAb'], color: '#a855f7', pct: 17 },
-]
-
-const ADVANTAGES = [
-  { title: 'Sostenible', desc: 'Condiciones suaves (T/P), menor huella de carbono vs síntesis química.', icon: '♻️' },
-  { title: 'Escalable', desc: 'De matraz (mL) a biorreactor industrial (>100,000 L).', icon: '📈' },
-  { title: 'Específico', desc: 'Alta estereoselectividad enzimática sin subproductos racémicos.', icon: '🔬' },
-  { title: 'Versátil', desc: 'Sustratos renovables: melaza, lignocelulosa, lactosuero.', icon: '🌱' },
+  { sector: 'Alimentos & Bebidas', pct: 35, color: '#879186' },
+  { sector: 'Farmacéutica', pct: 28, color: '#1a1a1a' },
+  { sector: 'Biocombustibles', pct: 20, color: '#64748b' },
+  { sector: 'Enzimas', pct: 17, color: '#cbd5e1' },
 ]
 
 export default function Dashboard() {
   return (
-    <div className="space-y-20 animate-in fade-in duration-700">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-1000">
       
-      {/* ─── Hero Section ─── */}
-      <section className="relative bg-[#fafcfb] border border-[#E6F7ED] p-8 md:p-12">
-        <div className="max-w-4xl">
-          <span className="inline-flex items-center gap-2 text-[#879186] text-xs font-medium tracking-widest uppercase mb-6">
-            <span className="w-2 h-2 rounded-full bg-[#E6F7ED]"></span>
-            Módulo 1 · Fundamentos
-          </span>
-          <h2 className="text-4xl md:text-5xl font-light text-[#1a1a1a] mb-6 tracking-tight leading-tight">
-            Fundamentos de Fermentación <br className="hidden md:block"/>
-            <span className="font-medium">y Cinética Microbiana</span>
-          </h2>
-          <p className="text-[#879186] text-lg leading-relaxed mb-10 font-light">
-            La <strong className="font-medium text-[#1a1a1a]">fermentación</strong> es el proceso metabólico por el cual microorganismos 
-            transforman sustratos orgánicos —en condiciones aeróbicas o anaeróbicas— para obtener{' '}
-            <strong className="font-medium text-[#1a1a1a]">ATP</strong> y metabolitos de interés industrial. 
-            A diferencia de la respiración aeróbica completa, la fermentación stricto sensu utiliza 
-            compuestos orgánicos como aceptores finales de electrones.
+      {/* ─── BENTO GRID PRINCIPAL ─── */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        {/* HERO BLOCK (Span 8) - Rompe la simetría */}
+        <div className="md:col-span-8 bg-gradient-to-br from-white to-[#fafcfb] rounded-[2rem] p-10 md:p-14 shadow-[0_4px_40px_-10px_rgba(135,145,134,0.08)] relative overflow-hidden group">
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-[#E6F7ED] rounded-full mix-blend-multiply filter blur-[80px] opacity-50 transition-transform duration-700 group-hover:scale-150"></div>
+          
+          <p className="text-[10px] font-bold text-[#879186] tracking-[0.2em] uppercase mb-6 flex items-center gap-4">
+            <span className="w-8 h-px bg-[#879186]/30"></span> Módulo 1
           </p>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-[#E6F7ED]">
-            {[
-              { label: 'Mercado Global', value: '$390B/año', sub: '2024' },
-              { label: 'CAGR', value: '8.3%', sub: '2024–2030' },
-              { label: 'Biorreactores', value: '>100k L', sub: 'Escala industrial' },
-              { label: 'Microorg. usados', value: '>300 sp.', sub: 'Procesos activos' },
-            ].map(stat => (
-              <div key={stat.label}>
-                <div className="text-2xl font-light text-[#1a1a1a] font-mono tracking-tight">{stat.value}</div>
-                <div className="text-xs text-[#879186] mt-1 font-medium tracking-wide uppercase">{stat.label}</div>
-                <div className="text-xs text-[#879186]/60 font-light">{stat.sub}</div>
+          <h2 className="text-4xl md:text-6xl font-light text-[#1a1a1a] tracking-tighter leading-[1.1] mb-8 relative z-10">
+            Ingeniería de <br />
+            <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#1a1a1a] to-[#879186]">
+              Fermentación.
+            </span>
+          </h2>
+          
+          <p className="text-[#879186] text-lg font-light leading-relaxed max-w-xl relative z-10">
+            No es solo biología; es la orquestación de nanofábricas microbianas a escala industrial. Transformamos sustratos orgánicos en metabolitos de alto valor añadido mediante un control cinético riguroso.
+          </p>
+        </div>
+
+        {/* STATS BLOCK (Span 4) - Contraste tipográfico extremo */}
+        <div className="md:col-span-4 flex flex-col gap-6">
+          <div className="flex-1 bg-white rounded-[2rem] p-10 shadow-[0_4px_40px_-10px_rgba(135,145,134,0.08)] flex flex-col justify-center">
+            <p className="text-[10px] font-bold text-[#879186] tracking-[0.2em] uppercase mb-2">Mercado Global</p>
+            <h3 className="text-6xl font-light text-[#1a1a1a] tracking-tighter">$390<span className="text-3xl text-[#879186]">B</span></h3>
+            <div className="w-full h-px bg-gradient-to-r from-[#E6F7ED] to-transparent my-6"></div>
+            <p className="text-[10px] font-bold text-[#879186] tracking-[0.2em] uppercase mb-2">CAGR (2024-2030)</p>
+            <h3 className="text-4xl font-light text-[#1a1a1a] tracking-tighter">8.3<span className="text-xl text-[#879186]">%</span></h3>
+          </div>
+        </div>
+
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        {/* MICROORGANISMOS (Span 5) */}
+        <div className="md:col-span-5 bg-white rounded-[2rem] p-10 shadow-[0_4px_40px_-10px_rgba(135,145,134,0.08)]">
+          <div className="flex items-center justify-between mb-8">
+            <h4 className="text-lg font-medium text-[#1a1a1a] tracking-tight">Agentes Catalíticos</h4>
+            <ArrowRight size={18} className="text-[#879186]" />
+          </div>
+          
+          <div className="space-y-6">
+            {MICROORGANISMS.map((mo, i) => (
+              <div key={i} className="flex items-start gap-5 group cursor-default">
+                <div className="w-12 h-12 rounded-2xl bg-[#fafcfb] flex items-center justify-center text-xl shadow-inner border border-[#E6F7ED]/50 transition-all duration-300 group-hover:bg-[#E6F7ED]/30">
+                  {mo.icon}
+                </div>
+                <div className="flex-1 border-b border-[#E6F7ED]/30 pb-4 group-last:border-0">
+                  <div className="flex justify-between items-baseline mb-1">
+                    <h5 className="font-medium text-[#1a1a1a]">{mo.name}</h5>
+                    <span className="text-xs font-mono text-[#879186]">{mo.time}</span>
+                  </div>
+                  <p className="text-xs text-[#879186] font-light">{mo.uses}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
-      </section>
-      
 
-      {/* ─── Microorganisms ─── */}
-      <section>
-        <SectionHeader
-          tag="AGENTES FERMENTATIVOS"
-          title="Microorganismos en Bioprocesos"
-          sub="Cada grupo presenta ventajas específicas según el producto objetivo y las condiciones de proceso."
-        />
-        <div className="grid md:grid-cols-3 gap-8 mt-10">
-          {MICROORGANISMS.map(mo => (
-            <div key={mo.name} className="bg-white border border-[#E6F7ED] p-8 hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all duration-500">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-[#fafcfb] border border-[#E6F7ED] rounded-full flex items-center justify-center text-2xl shadow-sm">
-                  {mo.icon}
+        {/* APLICACIONES (Span 7) - Visualización de datos de alta gama */}
+        <div className="md:col-span-7 bg-[#1a1a1a] rounded-[2rem] p-10 shadow-[0_10px_50px_-15px_rgba(26,26,26,0.3)] relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#E6F7ED] mix-blend-overlay filter blur-[100px] opacity-10 pointer-events-none"></div>
+          
+          <p className="text-[10px] font-bold text-[#879186] tracking-[0.2em] uppercase mb-8 text-white/50">Distribución Industrial</p>
+          
+          <div className="space-y-8 relative z-10">
+            {APPLICATIONS.map((app, i) => (
+              <div key={i}>
+                <div className="flex justify-between items-baseline mb-3">
+                  <h5 className="text-white font-light tracking-wide">{app.sector}</h5>
+                  <span className="text-white/60 font-mono text-sm">{app.pct}%</span>
                 </div>
-                <h3 className="text-xl font-medium text-[#1a1a1a] tracking-tight">{mo.name}</h3>
+                {/* Progress bar ultra premium (línea muy fina con brillo) */}
+                <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-white relative shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                    style={{ width: `${app.pct}%` }}
+                  ></div>
+                </div>
               </div>
-              <p className="text-[#879186] text-sm mb-8 leading-relaxed font-light min-h-[60px]">{mo.detail}</p>
-              <div className="space-y-1">
-                <Row label="Ejemplos" val={mo.examples} />
-                <Row label="Aplicaciones" val={mo.uses} />
-                <Row label="Tiempo dup." val={mo.doubling} highlight />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </section>
 
-      {/* ─── Applications ─── */}
-      <section>
-        <SectionHeader
-          tag="APLICACIONES INDUSTRIALES"
-          title="Sectores de Impacto"
-          sub="La biotecnología industrial abarca desde alimentos hasta fármacos de alta complejidad molecular."
-        />
-        <div className="grid md:grid-cols-2 gap-8 mt-10">
-          {APPLICATIONS.map(app => (
-            <div key={app.sector} className="bg-white border border-[#E6F7ED] p-8 hover:border-[#879186]/30 transition-colors duration-300">
-              <div className="flex items-end justify-between mb-4">
-                <h3 className="font-medium text-[#1a1a1a] text-lg tracking-tight">{app.sector}</h3>
-                <span className="text-xs font-mono font-medium text-[#879186]">{app.pct}% del mercado</span>
-              </div>
-              {/* Barra de progreso ultra-delgada */}
-              <div className="w-full bg-[#fafcfb] h-1 mb-6 overflow-hidden">
-                <div
-                  className="h-full transition-all duration-1000 ease-out"
-                  style={{ width: `${app.pct}%`, backgroundColor: app.color }}
-                />
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {app.examples.map(ex => (
-                  <span
-                    key={ex}
-                    className="text-xs px-3 py-1 font-light tracking-wide bg-[#fafcfb] text-[#1a1a1a]"
-                    style={{ border: `1px solid ${app.color}40` }}
-                  >
-                    {ex}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── Advantages ─── */}
-      <section>
-        <SectionHeader
-          tag="VENTAJAS DEL PROCESO"
-          title="¿Por qué usar Fermentación?"
-          sub="La fermentación ofrece ventajas únicas frente a la síntesis química convencional."
-        />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-          {ADVANTAGES.map(adv => (
-            <div key={adv.title} className="bg-white border border-[#E6F7ED] p-8 flex flex-col items-start">
-              <div className="text-2xl mb-4 bg-[#fafcfb] p-3 rounded-full border border-[#E6F7ED]/50">{adv.icon}</div>
-              <h3 className="font-medium text-[#1a1a1a] mb-3">{adv.title}</h3>
-              <p className="text-[#879186] text-sm leading-relaxed font-light">{adv.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── Key Concepts Box ─── */}
-      <section className="bg-[#fafcfb] border border-[#E6F7ED] p-8 md:p-10 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#E6F7ED] rounded-full mix-blend-multiply filter blur-3xl opacity-30 translate-x-1/2 -translate-y-1/2"></div>
-        
-        <h3 className="text-[#1a1a1a] font-medium text-xl mb-8 flex items-center gap-3 relative z-10 tracking-tight">
-          <span className="text-[#879186] font-light">|</span> Conceptos Clave del Programa
-        </h3>
-        
-        <div className="grid md:grid-cols-2 gap-6 relative z-10">
-          {[
-            ['Fermentación aeróbica', 'O₂ como aceptor final de e⁻. Máxima producción de ATP (~36 mol ATP/mol glucosa). Ej: producción de biomasa, ácido cítrico.'],
-            ['Fermentación anaeróbica', 'Compuesto orgánico como aceptor de e⁻. Menor rendimiento energético (~2 ATP). Ej: etanol, ácido láctico.'],
-            ['Cinética microbiana', 'Describe cuantitativamente la velocidad de crecimiento, consumo de sustrato y formación de producto en función de las condiciones del medio.'],
-            ['Modelo de Monod (1949)', 'Relaciona μ con la concentración de sustrato limitante: μ = μmax · S / (Ks + S). Análogo a Michaelis-Menten enzimático.'],
-          ].map(([title, body]) => (
-            <div key={title} className="bg-white p-6 border border-[#E6F7ED] hover:shadow-sm transition-shadow">
-              <div className="font-medium text-[#1a1a1a] text-sm mb-2">{title}</div>
-              <div className="text-[#879186] text-sm leading-relaxed font-light">{body}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-      
-    </div>
-  )
-}
-
-/* ─── Componentes Auxiliares (Actualizados al diseño minimalista) ─── */
-
-function Row({ label, val, highlight }) {
-  return (
-    <div className="flex justify-between items-start gap-4 py-3 border-b border-[#E6F7ED]/50 last:border-0">
-      <span className="text-[#879186] text-xs font-medium uppercase tracking-wider">{label}</span>
-      <span className={`text-right text-sm ${highlight ? 'text-[#1a1a1a] font-mono font-medium' : 'text-[#1a1a1a] font-light'}`}>
-        {val}
-      </span>
-    </div>
-  )
-}
-
-export function SectionHeader({ tag, title, sub }) {
-  return (
-    <div className="max-w-3xl">
-      <div className="flex items-center gap-3 mb-4">
-        <span className="w-8 h-px bg-[#879186]/30"></span>
-        <span className="text-xs font-medium text-[#879186] tracking-widest uppercase">{tag}</span>
       </div>
-      <h2 className="text-3xl font-light text-[#1a1a1a] mb-3 tracking-tight">{title}</h2>
-      {sub && <p className="text-[#879186] text-base leading-relaxed font-light">{sub}</p>}
+
+      {/* ─── CONCEPTOS CLAVE (Layout de revista científica) ─── */}
+      <div className="bg-white rounded-[2rem] p-10 md:p-14 shadow-[0_4px_40px_-10px_rgba(135,145,134,0.08)] mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+          
+          <div className="md:col-span-1">
+            <h4 className="text-2xl font-light text-[#1a1a1a] tracking-tight mb-4">Dogma del Bioproceso</h4>
+            <p className="text-[#879186] text-sm font-light leading-relaxed">
+              La transición de la bioquímica teórica a la viabilidad económica comercial.
+            </p>
+          </div>
+
+          <div className="md:col-span-3 grid sm:grid-cols-2 gap-x-12 gap-y-10">
+            <div>
+              <span className="text-[10px] font-bold text-[#879186] tracking-[0.2em] uppercase block mb-3">01. Fermentación Aeróbica</span>
+              <p className="text-[#1a1a1a] text-sm font-light leading-relaxed">
+                El <strong className="font-medium">O₂</strong> actúa como aceptor final de electrones. Maximiza la producción de ATP (~36 mol/mol glucosa). Indispensable para alta densidad de biomasa.
+              </p>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-[#879186] tracking-[0.2em] uppercase block mb-3">02. Fermentación Anaeróbica</span>
+              <p className="text-[#1a1a1a] text-sm font-light leading-relaxed">
+                Rendimiento energético ínfimo (~2 ATP), pero fuerza al microorganismo a secretar metabolitos masivamente (etanol, lactato) para mantener el balance redox.
+              </p>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-[#879186] tracking-[0.2em] uppercase block mb-3">03. Cinética Microbiana</span>
+              <p className="text-[#1a1a1a] text-sm font-light leading-relaxed">
+                Traducción matemática de la biología. Modela la velocidad de crecimiento (<span className="font-mono text-xs">μ</span>) y el consumo de sustrato en función de termodinámica estricta.
+              </p>
+            </div>
+            <div>
+              <span className="text-[10px] font-bold text-[#879186] tracking-[0.2em] uppercase block mb-3">04. Ecuación de Monod</span>
+              <p className="text-[#1a1a1a] text-sm font-light leading-relaxed">
+                La piedra angular empírica (1949). Relación hiperbólica entre el sustrato limitante y la tasa específica de crecimiento. Análogo a Michaelis-Menten.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   )
 }
