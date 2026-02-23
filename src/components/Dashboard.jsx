@@ -189,3 +189,26 @@ export function Row({ label, val, highlight }) {
     </div>
   )
 }
+export function SectionHeader({ tag, title, sub }) {
+  return (
+    <div className="max-w-3xl mb-10">
+      <div className="flex items-center gap-3 mb-4">
+        <span className="w-8 h-px bg-[#879186]/30"></span>
+        <span className="text-xs font-medium text-[#879186] tracking-widest uppercase">{tag}</span>
+      </div>
+      <h2 className="text-3xl font-light text-[#1a1a1a] mb-3 tracking-tight">{title}</h2>
+      {sub && <p className="text-[#879186] text-base leading-relaxed font-light">{sub}</p>}
+    </div>
+  )
+}
+
+export function Row({ label, val, highlight }) {
+  return (
+    <div className="flex justify-between items-start gap-4 py-3 border-b border-[#E6F7ED]/50 last:border-0">
+      <span className="text-[#879186] text-xs font-medium uppercase tracking-wider">{label}</span>
+      <span className={`text-right text-sm ${highlight ? 'text-[#1a1a1a] font-mono font-medium' : 'text-[#1a1a1a] font-light'}`}>
+        {val}
+      </span>
+    </div>
+  )
+}
