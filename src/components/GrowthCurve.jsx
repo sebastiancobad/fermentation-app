@@ -4,7 +4,7 @@ import {
   Tooltip, Legend, ResponsiveContainer, ReferenceLine, ReferenceArea,
 } from 'recharts'
 import { SectionHeader } from './Dashboard'
-import Math from './Math'
+import MathTex from './Math'
 
 // ─── Data generation ────────────────────────────────────────────────────────
 function generateGrowthData(mu = 0.30, lagEnd = 8, expEnd = 24, statEnd = 36, X0 = 0.5, Xmax = 14) {
@@ -157,7 +157,7 @@ export default function GrowthCurve() {
             min={0.05} max={0.80} step={0.01}
             onChange={v => setMu(parseFloat(v))}
             derived={`td = ${td} h`}
-            color="#4A6741"
+            color="#2D6A4F"
           />
           <SliderParam
             label="Fin Fase LAG"
@@ -173,7 +173,7 @@ export default function GrowthCurve() {
             value={expEnd}
             min={lagEnd + 4} max={40} step={1}
             onChange={v => setExpEnd(parseInt(v))}
-            color="#4A6741"
+            color="#2D6A4F"
           />
           <SliderParam
             label="Fin Fase STAT"
@@ -268,7 +268,7 @@ export default function GrowthCurve() {
               type="monotone"
               dataKey={logScale ? 'logBiomass' : 'biomass'}
               name={logScale ? 'log₁₀(X)' : 'Biomasa X (g/L)'}
-              stroke="#4A6741"
+              stroke="#2D6A4F"
               strokeWidth={2.5}
               dot={false}
               activeDot={{ r: 5, fill: '#2D6A4F', stroke: '#FFFFFF', strokeWidth: 2 }}
@@ -336,8 +336,8 @@ export default function GrowthCurve() {
             <p className="text-sm text-sage-500 mb-3">
               La fase exponencial se describe por una ecuación diferencial de primer orden:
             </p>
-            <Math tex={String.raw`\frac{dX}{dt} = \mu \cdot X`} display />
-            <Math tex={String.raw`\text{Integrada: } X(t) = X_0 \cdot e^{\mu \cdot t}`} display className="mt-2" />
+            <MathTex tex={String.raw`\frac{dX}{dt} = \mu \cdot X`} display />
+            <MathTex tex={String.raw`\text{Integrada: } X(t) = X_0 \cdot e^{\mu \cdot t}`} display className="mt-2" />
             <p className="text-xs text-sage-400 mt-2">
               Donde X₀ es la concentración inicial de biomasa al inicio de la fase exponencial.
             </p>
@@ -354,7 +354,7 @@ export default function GrowthCurve() {
             </div>
             <div className="mt-3 bg-warm-code rounded-lg p-3 border border-sage-200">
               <div className="text-xs font-semibold text-forest-600 mb-2">Para μ = {mu} h⁻¹</div>
-              <Math tex={String.raw`t_d = \frac{\ln(2)}{${mu}} = ${td} \;\text{h}`} display />
+              <MathTex tex={String.raw`t_d = \frac{\ln(2)}{${mu}} = ${td} \;\text{h}`} display />
             </div>
           </div>
         </div>
@@ -387,7 +387,7 @@ function FormulaRow({ tex, desc }) {
   return (
     <div className="flex items-center gap-3">
       <div className="formula text-xs px-2 py-1 flex-shrink-0">
-        <Math tex={tex} />
+        <MathTex tex={tex} />
       </div>
       <span className="text-xs text-sage-500">{desc}</span>
     </div>
