@@ -315,16 +315,18 @@ DIPPR 100: k_L = A + B×T + C×T² + D×T³ + E×T⁴
 ### Heat of Vaporization
 
 ```
-DIPPR 106: ΔH_vap = A × (1 - Tr)^(B + C×Tr + D×Tr²)
+DIPPR 106: ΔH_vap = A × (1 - Tr)^(B + C×Tr + D×Tr² + E×Tr³)
 Note: Tr = T/Tc — the critical temperature must be supplied separately
-(not as the E coefficient). See implementation note in COMPONENT_DB_SCHEMA.sql.
+(not encoded in the ABCDE coefficients). See implementation note in
+COMPONENT_DB_SCHEMA.sql. The E×Tr³ term is zero for many compounds
+but must be supported for generality.
 ```
 
 ### Surface Tension
 
 ```
-DIPPR 106: σ = A × (1 - Tr)^(B + C×Tr + D×Tr²)
-Note: Same Tc requirement as heat of vaporization above.
+DIPPR 106: σ = A × (1 - Tr)^(B + C×Tr + D×Tr² + E×Tr³)
+Note: Same Tc requirement and E×Tr³ note as heat of vaporization above.
 ```
 
 ---
@@ -343,7 +345,9 @@ Note: Same Tc requirement as heat of vaporization above.
 - Li method: k_mix = ΣΣ Φ_i × Φ_j × 2/(1/k_i + 1/k_j)
 
 **Surface tension (mixture):**
-- Macleod-Sugden: σ^(1/4) = Σ [P_i] × (ρ_L × x_i - ρ_V × y_i) / M_mix
+- Macleod-Sugden: σ^(1/4) = Σ [P_i] × (x_i × ρ_L/M_L - y_i × ρ_V/M_V)
+  where M_L, M_V are the liquid and vapor phase molecular weights respectively
+  (each phase has different composition and thus different MW)
 
 ---
 
@@ -368,6 +372,14 @@ Note: Same Tc requirement as heat of vaporization above.
 ```
 
 ### 8.2 PT Flash Output
+
+> **IMPLEMENTATION NOTE:** The numerical values below illustrate the output JSON
+> **structure and field names only**. They are placeholder values assembled for
+> schema documentation purposes and are **not** the output of a converged PR flash.
+> Before using this document as a test reference, regenerate all values from a
+> validated flash engine. Known inconsistencies in the placeholder data include:
+> K-values that do not match y_i/x_i, molecular weights that do not match
+> compositions, and compressibility factors inconsistent with molar volumes.
 
 ```json
 {
@@ -399,9 +411,9 @@ Note: Same Tc requirement as heat of vaporization above.
       "thermal_conductivity": { "value": 0.032, "unit": "W/(m·K)" },
       "enthalpy": { "value": -4520, "unit": "J/mol" },
       "entropy": { "value": -28.3, "unit": "J/(mol·K)" },
-      "molecular_weight": { "value": 18.27, "unit": "g/mol" }
+      "molecular_weight": { "value": 20.04, "unit": "g/mol" }
     },
-    "k_values": [3.15, 1.54, 0.68, 0.30],
+    "k_values": [3.15, 0.54, 0.17, 0.087],
     "fugacity_coefficients": [0.812, 0.785, 0.725, 0.660]
   },
 
@@ -415,14 +427,14 @@ Note: Same Tc requirement as heat of vaporization above.
     "properties": {
       "density": { "value": 462.0, "unit": "kg/m³" },
       "molar_volume": { "value": 8.45e-5, "unit": "m³/mol" },
-      "compressibility": 0.062,
+      "compressibility": 0.125,
       "viscosity": { "value": 1.35e-4, "unit": "Pa·s" },
       "specific_heat_cp": { "value": 2.82, "unit": "kJ/(kg·K)" },
       "thermal_conductivity": { "value": 0.098, "unit": "W/(m·K)" },
       "surface_tension": { "value": 0.0085, "unit": "N/m" },
       "enthalpy": { "value": -18200, "unit": "J/mol" },
       "entropy": { "value": -85.2, "unit": "J/(mol·K)" },
-      "molecular_weight": { "value": 39.02, "unit": "g/mol" }
+      "molecular_weight": { "value": 36.30, "unit": "g/mol" }
     },
     "fugacity_coefficients": [2.560, 1.208, 0.495, 0.198]
   },
@@ -462,13 +474,13 @@ Note: Same Tc requirement as heat of vaporization above.
   "units": { "temperature": "°C", "pressure": "bar" },
 
   "bubble_curve": [
-    { "temperature": -161.5, "pressure": 1.013 },
+    { "temperature": -159.0, "pressure": 1.013 },
     { "temperature": -140.0, "pressure": 5.2 },
     "...100 points..."
   ],
   "dew_curve": [
-    { "temperature": -161.5, "pressure": 1.013 },
-    { "temperature": -120.0, "pressure": 8.5 },
+    { "temperature": -105.0, "pressure": 1.013 },
+    { "temperature": -95.0, "pressure": 3.5 },
     "...100 points..."
   ],
   "critical_point": {

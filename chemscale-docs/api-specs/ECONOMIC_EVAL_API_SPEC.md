@@ -471,7 +471,7 @@ Lang Factors:
   Solid-fluid plant:       f_Lang = 3.63
   Fluid processing plant:  f_Lang = 4.74
 
-Breakdown of Lang factor (fluid processing):
+Breakdown of Lang factor (fluid processing, Peters & Timmerhaus):
   Equipment purchase (delivered):  1.00
   Installation:                    0.47
   Instrumentation & controls:      0.36
@@ -479,12 +479,12 @@ Breakdown of Lang factor (fluid processing):
   Electrical:                      0.11
   Buildings:                       0.18
   Yard improvements:               0.10
-  Service facilities:              0.70
+  Service facilities:              0.55
   Engineering & supervision:       0.33
   Construction expenses:           0.41
   Legal expenses:                  0.04
   Contractor fee:                  0.22
-  Contingency:                     0.44
+  Contingency:                     0.29
   ─────────────────────────────────────
   Total (Lang factor):             4.74 × C_equipment
 ```
@@ -566,6 +566,9 @@ Net Present Value (NPV):
   NPV = Σ [CF_t / (1 + r)^t]  for t = 0 to project_life
   Where CF_t = (Revenue - OPEX - Depreciation) × (1 - tax) + Depreciation - CAPEX_t
 
+  Straight-line depreciation:
+    D = (FCI - Salvage_Value) / depreciation_years
+
 Internal Rate of Return (IRR):
   Find r such that NPV = 0  (solved iteratively via Brent's method)
 
@@ -583,6 +586,12 @@ Return on Investment (ROI):
 
 ### 5.1 Equipment Purchase Cost Output
 
+> **IMPLEMENTATION NOTE:** The Cp0 (base cost) values below are illustrative and
+> were not computed directly from the K1/K2/K3 constants in Section 4.1. When
+> implementing, always compute Cp0 = 10^(K1 + K2*log10(A) + K3*(log10(A))^2)
+> using the appropriate constants for the equipment type and sizing parameter.
+> The FBM values must satisfy FBM = B1 + B2*FM*FP from Section 4.3.
+
 ```json
 {
   "calc_id": "uuid-string",
@@ -598,9 +607,9 @@ Return on Investment (ROI):
       "base_cost_cp0": { "value": 68500, "unit": "USD", "year": 2018 },
       "pressure_factor_fp": 1.15,
       "material_factor_fm": 1.00,
-      "bare_module_factor_fbm": 3.17,
-      "bare_module_cost_cbm": { "value": 217100, "unit": "USD", "year": 2018 },
-      "cepci_escalated_cost": { "value": 298800, "unit": "USD", "year": 2026 },
+      "bare_module_factor_fbm": 3.54,
+      "bare_module_cost_cbm": { "value": 242490, "unit": "USD", "year": 2018 },
+      "cepci_escalated_cost": { "value": 333770, "unit": "USD", "year": 2026 },
       "method": "turton_2018"
     },
     {
@@ -610,9 +619,9 @@ Return on Investment (ROI):
       "base_cost_cp0": { "value": 95200, "unit": "USD", "year": 2018 },
       "pressure_factor_fp": 1.30,
       "material_factor_fm": 1.00,
-      "bare_module_factor_fbm": 4.16,
-      "bare_module_cost_cbm": { "value": 396000, "unit": "USD", "year": 2018 },
-      "cepci_escalated_cost": { "value": 545100, "unit": "USD", "year": 2026 },
+      "bare_module_factor_fbm": 4.62,
+      "bare_module_cost_cbm": { "value": 439824, "unit": "USD", "year": 2018 },
+      "cepci_escalated_cost": { "value": 605410, "unit": "USD", "year": 2026 },
       "method": "turton_2018"
     },
     {
@@ -670,22 +679,22 @@ Return on Investment (ROI):
       "electrical": { "value": 313500, "unit": "USD" },
       "buildings": { "value": 513000, "unit": "USD" },
       "yard_improvements": { "value": 285000, "unit": "USD" },
-      "service_facilities": { "value": 1995000, "unit": "USD" },
-      "total_direct_costs": { "value": 10260000, "unit": "USD" }
+      "service_facilities": { "value": 1567500, "unit": "USD" },
+      "total_direct_costs": { "value": 9832500, "unit": "USD" }
     },
     "indirect_costs": {
       "engineering_and_supervision": { "value": 940500, "unit": "USD" },
       "construction_expenses": { "value": 1168500, "unit": "USD" },
       "legal_expenses": { "value": 114000, "unit": "USD" },
       "contractor_fee": { "value": 627000, "unit": "USD" },
-      "contingency": { "value": 1254000, "unit": "USD" },
-      "total_indirect_costs": { "value": 4104000, "unit": "USD" }
+      "contingency": { "value": 826500, "unit": "USD" },
+      "total_indirect_costs": { "value": 3676500, "unit": "USD" }
     },
 
     "fixed_capital_investment": { "value": 13509000, "unit": "USD" },
     "land": { "value": 500000, "unit": "USD" },
-    "working_capital": { "value": 2101350, "unit": "USD" },
-    "total_capital_investment": { "value": 16110350, "unit": "USD" }
+    "working_capital": { "value": 2472176, "unit": "USD" },
+    "total_capital_investment": { "value": 16481176, "unit": "USD" }
   }
 }
 ```
@@ -718,10 +727,10 @@ Return on Investment (ROI):
     },
     "operating_labor": {
       "total_operators": 15,
-      "total_with_supervision_and_benefits": { "value": 1491750, "unit": "USD" }
+      "total_with_supervision_and_benefits": { "value": 1569750, "unit": "USD" }
     },
     "maintenance": { "value": 600000, "unit": "USD" },
-    "overhead": { "value": 1045875, "unit": "USD" },
+    "overhead": { "value": 1084875, "unit": "USD" },
     "fixed_charges": {
       "insurance": { "value": 200000, "unit": "USD" },
       "property_tax": { "value": 400000, "unit": "USD" },
@@ -730,25 +739,33 @@ Return on Investment (ROI):
     "general_and_administrative": {
       "ga_percent_applied": 5.0,
       "base_costs": "(raw_materials + utilities + labor + maintenance)",
-      "total": { "value": 260954, "unit": "USD" }
+      "total": { "value": 264854, "unit": "USD" }
     }
   },
 
-  "total_annual_operating_cost": { "value": 7125899, "unit": "USD" },
+  "total_annual_operating_cost": { "value": 7246799, "unit": "USD" },
 
   "cost_pie_chart_data": [
-    { "category": "Raw Materials", "value": 1113000, "percent": 15.6 },
-    { "category": "Utilities", "value": 2014320, "percent": 28.3 },
-    { "category": "Labor", "value": 1491750, "percent": 20.9 },
-    { "category": "Maintenance", "value": 600000, "percent": 8.4 },
-    { "category": "Overhead", "value": 1045875, "percent": 14.7 },
-    { "category": "Fixed Charges", "value": 600000, "percent": 8.4 },
-    { "category": "G&A", "value": 260954, "percent": 3.7 }
+    { "category": "Raw Materials", "value": 1113000, "percent": 15.4 },
+    { "category": "Utilities", "value": 2014320, "percent": 27.8 },
+    { "category": "Labor", "value": 1569750, "percent": 21.7 },
+    { "category": "Maintenance", "value": 600000, "percent": 8.3 },
+    { "category": "Overhead", "value": 1084875, "percent": 15.0 },
+    { "category": "Fixed Charges", "value": 600000, "percent": 8.3 },
+    { "category": "G&A", "value": 264854, "percent": 3.7 }
   ]
 }
 ```
 
 ### 5.4 Profitability Output
+
+> **IMPLEMENTATION NOTE:** The cash flow table below illustrates the output
+> **structure** only. The numerical values are placeholder data and contain known
+> inconsistencies (cumulative CF does not track net CF between years, depreciation
+> does not subtract salvage value, working capital timing is simplified). Before
+> using as a test reference, regenerate all values from a validated NPV engine.
+> Note also: the OPEX in the profitability input ($98.5M) represents a different
+> (larger) project than the OPEX module example ($7.1M).
 
 ```json
 {

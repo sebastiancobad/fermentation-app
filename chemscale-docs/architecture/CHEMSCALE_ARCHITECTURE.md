@@ -348,7 +348,7 @@ The database stores:
 **Standards:** NACE MR0175/ISO 15156, ASME II Part D
 
 **Capabilities:**
-- Material database: Carbon steel (A106/A53), stainless steels (304/304L, 316/316L, 321, 347), duplex (2205, 2507), nickel alloys (Inconel 625/825, Hastelloy C-276), titanium, Monel
+- Material database: Carbon steel (A106/A53), stainless steels (304/304L, 316/316L, 321, 347), duplex (2205, 2507), nickel alloys (Inconel 625, Incoloy 825, Hastelloy C-276), titanium, Monel
 - Corrosion rate calculators:
   - Generalized: de Waard-Milliams (CO2 sweet corrosion)
   - Sour service: NACE MR0175 region mapping (SSC, HIC, SOHIC)

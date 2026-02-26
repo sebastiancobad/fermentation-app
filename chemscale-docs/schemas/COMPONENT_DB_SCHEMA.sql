@@ -63,7 +63,13 @@ CREATE TABLE components (
     data_source     VARCHAR(100) DEFAULT 'DIPPR_801',
     data_quality    VARCHAR(20) DEFAULT 'recommended',  -- recommended, estimated, predicted
     created_at      TIMESTAMPTZ DEFAULT NOW(),
-    updated_at      TIMESTAMPTZ DEFAULT NOW()
+    updated_at      TIMESTAMPTZ DEFAULT NOW(),
+
+    -- Physical validity constraints
+    CONSTRAINT chk_tc_positive CHECK (tc_k > 0),
+    CONSTRAINT chk_pc_positive CHECK (pc_pa > 0),
+    CONSTRAINT chk_mw_positive CHECK (molecular_weight > 0),
+    CONSTRAINT chk_acentric_range CHECK (acentric_factor > -1 AND acentric_factor < 2)
 );
 
 CREATE INDEX idx_components_cas ON components(cas_number);
@@ -103,7 +109,7 @@ CREATE TABLE property_correlations (
     -- 101: Y = exp(A + B/T + C*ln(T) + D*T^E)
     -- 102: Y = A*T^B / (1 + C/T + D/T^2)
     -- 105: Y = A / B^(1 + (1-T/C)^D)
-    -- 106: Y = A * (1-Tr)^(B + C*Tr + D*Tr^2)
+    -- 106: Y = A * (1-Tr)^(B + C*Tr + D*Tr^2 + E*Tr^3)   (E often zero)
     -- 107: Y = A + B*((C/T)/sinh(C/T))^2 + D*((E/T)/cosh(E/T))^2
 
     coeff_a           DOUBLE PRECISION NOT NULL,
@@ -118,7 +124,10 @@ CREATE TABLE property_correlations (
 
     data_source       VARCHAR(100) DEFAULT 'DIPPR_801',
     data_quality      VARCHAR(20) DEFAULT 'recommended',
-    created_at        TIMESTAMPTZ DEFAULT NOW()
+    created_at        TIMESTAMPTZ DEFAULT NOW(),
+
+    CONSTRAINT chk_temp_range_order CHECK (t_min_k < t_max_k),
+    CONSTRAINT chk_temp_positive CHECK (t_min_k > 0)
 );
 
 CREATE INDEX idx_correlations_component ON property_correlations(component_id);
@@ -292,7 +301,9 @@ CREATE TABLE cost_correlations (
     base_cepci        DOUBLE PRECISION NOT NULL DEFAULT 603.1,
     data_source       VARCHAR(200) DEFAULT 'Turton_2018',
 
-    created_at        TIMESTAMPTZ DEFAULT NOW()
+    created_at        TIMESTAMPTZ DEFAULT NOW(),
+
+    CONSTRAINT uq_cost_correlation UNIQUE (equipment_type, equipment_subtype)
 );
 
 CREATE INDEX idx_cost_equipment_type ON cost_correlations(equipment_type);
@@ -366,7 +377,7 @@ CREATE TABLE projects (
 
 CREATE TABLE calculations (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id      UUID REFERENCES projects(id),
+    project_id      UUID REFERENCES projects(id) ON DELETE CASCADE,
     module          VARCHAR(50) NOT NULL,                 -- 'heat_exchanger', 'pipe_sizing', etc.
     endpoint        VARCHAR(100) NOT NULL,                -- '/design', '/rate', '/estimate'
     tag             VARCHAR(50),                          -- Equipment tag (e.g., 'E-1001')
@@ -400,14 +411,14 @@ CREATE INDEX idx_calc_created ON calculations(created_at DESC);
 
 CREATE TABLE equipment_list (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_id      UUID NOT NULL REFERENCES projects(id),
+    project_id      UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
     tag             VARCHAR(50) NOT NULL,
     description     VARCHAR(300),
     equipment_type  VARCHAR(100) NOT NULL,
     service         VARCHAR(300),
 
     -- Link to latest calculation
-    latest_calc_id  UUID REFERENCES calculations(id),
+    latest_calc_id  UUID REFERENCES calculations(id) ON DELETE SET NULL,
 
     -- Key sizing parameters (denormalized for quick access)
     sizing_summary  JSONB,                               -- e.g., {"area_m2": 132.5, "duty_kW": 3850}
@@ -506,7 +517,7 @@ BEGIN
         RETURN p_a / p_b^(1.0 + (1.0 - p_t/p_c)^p_d);
 
     ELSIF p_equation_number = 106 THEN
-        -- Y = A * (1-Tr)^(B + C*Tr + D*Tr^2)
+        -- Y = A * (1-Tr)^(B + C*Tr + D*Tr^2 + E*Tr^3)
         -- Requires critical temperature (Tc) passed as p_tc
         IF p_tc IS NULL OR p_tc <= 0 THEN
             RAISE EXCEPTION 'DIPPR 106 requires critical temperature (p_tc) > 0, got: %', p_tc;
@@ -515,7 +526,7 @@ BEGIN
         IF v_tr >= 1.0 THEN
             RETURN 0.0;  -- At or above Tc, property (e.g., surface tension, Hvap) is zero
         END IF;
-        RETURN p_a * (1.0 - v_tr)^(p_b + p_c*v_tr + COALESCE(p_d,0)*v_tr^2);
+        RETURN p_a * (1.0 - v_tr)^(p_b + p_c*v_tr + COALESCE(p_d,0)*v_tr^2 + COALESCE(p_e,0)*v_tr^3);
 
     ELSIF p_equation_number = 107 THEN
         -- Y = A + B*((C/T)/sinh(C/T))^2 + D*((E/T)/cosh(E/T))^2
@@ -543,7 +554,7 @@ INSERT INTO components (
     190.56, 4599000, 9.86e-5, 0.286, 0.0115,
     16.043, 111.66, 90.69,
     0.0, 1.1290, 1.1240,
-    -74520, -50460
+    -74870, -50720     -- NIST/CODATA standard values [J/mol]
 );
 
 -- Methane ideal gas Cp (DIPPR 107)

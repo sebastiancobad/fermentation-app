@@ -295,9 +295,9 @@ Provides exact geometry of an existing exchanger:
    1/U_o_dirty = 1/U_o_clean + R_f_outside + (d_o/d_i) × R_f_inside
    A_dirty = Q / (U_o_dirty × LMTD × Ft)
 
-   Note: For quick estimates where tube geometry is unknown, assume d_o/d_i ≈ 1.3
-   (typical for 3/4" OD × 14 BWG tubes). This introduces ~3% error vs. rigorous
-   calculation, which is acceptable at the estimation stage.
+   Note: For quick estimates where tube geometry is unknown, assume d_o/d_i ≈ 1.28
+   (typical for 3/4" OD × 14 BWG tubes: 19.05/14.83 = 1.284). The impact on
+   U_dirty is well under 1%, which is acceptable at the estimation stage.
 ```
 
 ### 4.2 Rigorous Design — Bell-Delaware Method
@@ -321,8 +321,13 @@ SHELL SIDE (Bell-Delaware):
    | 30°    | 10  – 10²  | 1.360    | -0.657  | 1.450  |
    | 30°    | < 10        | 1.400    | -0.667  | 1.450  |
    | 45°    | 10⁴ – 10⁵  | 0.370    | -0.396  | 1.930  |
-   | 90°    | 10⁴ – 10⁵  | 0.370    | -0.395  | 1.187  |
-   (Full table from Taborek, Chapter 3.3, Heat Exchanger Design Handbook)
+   | 90°    | 10⁴ – 10⁵  | 0.321    | -0.395  | 1.187  |
+
+   **IMPLEMENTATION NOTE:** This is a partial excerpt. The full Taborek table
+   (HEDH Chapter 3.3.10) contains entries for all four layouts (30°, 45°, 60°,
+   90°) across all five Reynolds number ranges. The 60° layout (commonly used)
+   must be loaded from the primary source. The implementer must verify all
+   coefficients against Taborek's original tables before production use.
 
    h_id = j_H × Cp × ṁ_s / (A_crossflow × Pr^(2/3))
    Where A_crossflow = D_s × L_bc × (1 - d_o / p_t) for single-segmental baffles
@@ -338,9 +343,16 @@ SHELL SIDE (Bell-Delaware):
    h_shell = h_id × Jc × Jl × Jb × Js × Jr
 
 4. Shell-side pressure drop:
-   ΔP_shell = ΔP_crossflow × (N_b - 1) × Rl × Rb
+   ΔP_shell = ΔP_crossflow_ideal × (N_b - 1) × Rl × Rb
               + ΔP_window × N_b
-              + ΔP_end_zones × 2 × Rb × Rs
+              + 2 × ΔP_end_ideal × (1 + N_cw/N_c) × Rb × Rs
+
+   Where:
+   Rl = leakage correction for ΔP (distinct from Jl for heat transfer)
+   Rb = bypass correction for ΔP (distinct from Jb for heat transfer)
+   Rs = unequal baffle spacing correction for ΔP (inlet/outlet vs. central)
+   N_cw = number of crossflow rows in the window zone
+   N_c  = number of crossflow rows between baffle tips
 
 TUBE SIDE:
 ──────────
@@ -363,7 +375,9 @@ TUBE SIDE:
    that would cause convergence issues in the design iteration loop.
 
 3. Pressure drop:
-   ΔP_tube = N_passes × [f × L/d_i × ρV²/2 + 2.5 × ρV²/2]
+   ΔP_tube = N_passes × f × L/d_i × ρV²/2 + (N_passes - 1) × 2.5 × ρV²/2
+   Note: There are (N_passes - 1) return bends, not N_passes. The return
+   loss coefficient of 2.5 is typical; add nozzle losses separately.
 
 OVERALL (all referred to outside tube surface area, A_o):
 ────────────────────────────────────────────────────────
@@ -407,7 +421,16 @@ OVERALL (all referred to outside tube surface area, A_o):
 
 3. For the condensing zone (Silver-Bell-Ghaly):
    h_eff = h_condensation / (1 + Z_SBG)
-   Z_SBG = (Cp_vapor × (T_vapor - T_interface)) / h_fg × (h_condensation / h_vapor_sensible)
+   Z_SBG = (x_g × Cp_vapor × dT/dQ_total) × (h_condensation / h_vapor_sensible)
+
+   Where:
+   x_g      = local vapor mass fraction
+   dT/dQ    = slope of the condensation curve (from the Q-vs-T enthalpy profile)
+   h_vapor_sensible = gas-phase sensible heat transfer coefficient
+
+   The term (x_g × Cp_vapor × dT/dQ) represents the fraction of total local
+   heat flux that must be transferred as vapor sensible cooling. This is
+   evaluated at each integration step along the condensation curve.
 
 4. Sum areas across all zones:
    A_total = Σ (Q_zone / (U_zone × LMTD_zone))
@@ -419,13 +442,28 @@ OVERALL (all referred to outside tube surface area, A_o):
 Per TEMA Section 6 / HTRI guidelines:
 
 1. Natural frequency of tubes:
-   fn = (Cn / (2π)) × √(E×I / (ρ_eff × A × L_span⁴))
+   fn = (λ_n² / (2π)) × √(E×I / (m_L × L_span⁴))
+
+   Where:
+   λ_n  = eigenvalue for boundary conditions (π for simply supported,
+          4.73 for clamped-clamped — first mode)
+   E    = tube elastic modulus [Pa]
+   I    = tube second moment of area [m⁴]
+   m_L  = mass per unit length [kg/m], including tube wall, contained
+          fluid, and hydrodynamic added mass
+   L_span = unsupported tube span between baffles [m]
 
 2. Vortex shedding frequency:
    fvs = St × V_crossflow / d_o    (St ≈ 0.2 for Re > 1000)
 
-3. Fluid-elastic instability:
-   V_critical = K × fn × d_o × √(m_eff × 2πζ / (ρ × d_o²))
+3. Fluid-elastic instability (Connors' criterion):
+   V_critical = K × fn × d_o × √(m_L × 2πζ / (ρ_fluid × d_o²))
+
+   Where:
+   K    = Connors' constant (depends on tube layout, typically 2.1-6.4)
+   ζ    = damping ratio (logarithmic decrement δ = 2πζ)
+   m_L  = mass per unit length [kg/m] (same as in natural frequency)
+   ρ_fluid = shell-side fluid density [kg/m³]
 
 4. Check: V_crossflow < 0.8 × V_critical  →  PASS
    Check: fvs / fn > 1.3 or < 0.7  →  PASS (outside lock-in range)
@@ -434,6 +472,15 @@ Per TEMA Section 6 / HTRI guidelines:
 ---
 
 ## 5. JSON Output Schemas
+
+> **IMPLEMENTATION NOTE:** The numerical values in the output examples below
+> illustrate the JSON **structure and field names**. They are placeholder values
+> assembled for schema documentation and are **not** the output of actual
+> Bell-Delaware calculations. Before using as test references, regenerate all
+> values from a validated heat exchanger rating engine. Known inconsistencies:
+> the crude oil duty/LMTD/U-values are mutually inconsistent, h_corrected
+> does not match h_ideal × ΠJ-factors, and some vibration values are
+> inconsistent with the crossflow velocity.
 
 ### 5.1 Estimate Output
 
