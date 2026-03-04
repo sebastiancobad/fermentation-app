@@ -8,11 +8,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.17.10",
+    "framer-motion": "^12.34.5",
     "katex": "^0.16.32",
     "lucide-react": "^0.344.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recharts": "^2.10.3",
+    "three": "^0.183.2",
     "vite-plugin-singlefile": "^2.3.0"
   },
   "devDependencies": {

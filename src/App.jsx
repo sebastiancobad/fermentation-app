@@ -7,6 +7,11 @@ import BioreactorModule from './components/BioreactorModule'
 import CaseStudies from './components/CaseStudies'
 import PracticalExercises from './components/PracticalExercises'
 import References from './components/References'
+import BatchSimulator from './components/BatchSimulator'
+import FedBatchSimulator from './components/FedBatchSimulator'
+import ContinuousSimulator from './components/ContinuousSimulator'
+import PHControlSimulator from './components/PHControlSimulator'
+import OxygenScalingSimulator from './components/OxygenScalingSimulator'
 
 const TAB_GROUPS = [
   {
@@ -22,6 +27,16 @@ const TAB_GROUPS = [
     tabs: [
       { id: 'calculator',  label: 'Calculadora Cinética', short: 'Calc.'   },
       { id: 'bioreactor',  label: 'Biorreactores',        short: 'Reactor' },
+    ],
+  },
+  {
+    group: 'Simulaciones 3D',
+    tabs: [
+      { id: 'sim-batch',    label: 'Batch (Monod)',         short: 'Batch'   },
+      { id: 'sim-fedbatch', label: 'Fed-Batch',             short: 'F-Batch' },
+      { id: 'sim-cont',     label: 'Continuo',              short: 'Cont.'   },
+      { id: 'sim-ph',       label: 'Control pH',            short: 'pH'      },
+      { id: 'sim-o2',       label: 'O₂ + Escalado',         short: 'O₂/Esc.' },
     ],
   },
   {
@@ -42,27 +57,35 @@ const TAB_GROUPS = [
 const ALL_TABS = TAB_GROUPS.flatMap(g => g.tabs)
 
 const COMPONENTS = {
-  dashboard:  <Dashboard />,
-  growth:     <GrowthCurve />,
-  calculator: <KineticCalculator />,
-  monod:      <MonodSimulator />,
-  bioreactor: <BioreactorModule />,
-  cases:      <CaseStudies />,
-  exercises:  <PracticalExercises />,
-  references: <References />,
+  dashboard:    <Dashboard />,
+  growth:       <GrowthCurve />,
+  calculator:   <KineticCalculator />,
+  monod:        <MonodSimulator />,
+  bioreactor:   <BioreactorModule />,
+  'sim-batch':    <BatchSimulator />,
+  'sim-fedbatch': <FedBatchSimulator />,
+  'sim-cont':     <ContinuousSimulator />,
+  'sim-ph':       <PHControlSimulator />,
+  'sim-o2':       <OxygenScalingSimulator />,
+  cases:        <CaseStudies />,
+  exercises:    <PracticalExercises />,
+  references:   <References />,
+}
+
+const GROUP_COLORS = {
+  'Simulaciones 3D': 'text-plum-600 border-plum-400',
 }
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
 
-  // Sequential navigation
   const currentIdx = ALL_TABS.findIndex(t => t.id === activeTab)
   const prevTab = currentIdx > 0 ? ALL_TABS[currentIdx - 1] : null
   const nextTab = currentIdx < ALL_TABS.length - 1 ? ALL_TABS[currentIdx + 1] : null
+  const is3D = activeTab.startsWith('sim-')
 
   return (
     <div className="min-h-screen bg-warm-white text-forest-900">
-      {/* ─── Skip to content (a11y) ─── */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-forest-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
         Saltar al contenido
       </a>
@@ -83,9 +106,14 @@ export default function App() {
               </p>
             </div>
           </div>
-          <span className="hidden sm:block text-xs text-sage-400">
-            v2.0 · Herramienta Educativa
-          </span>
+          <div className="flex items-center gap-2">
+            {is3D && (
+              <span className="hidden sm:inline-flex items-center gap-1 text-xs bg-plum-50 text-plum-600 border border-plum-200 rounded-full px-2 py-0.5 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-plum-500 animate-pulse" /> 3D
+              </span>
+            )}
+            <span className="hidden sm:block text-xs text-sage-400">v3.0 · Simuladores 3D</span>
+          </div>
         </div>
 
         {/* ─── Navigation Tabs ─── */}
@@ -98,6 +126,12 @@ export default function App() {
                     <span className="w-px h-4 bg-sage-200" />
                   </li>
                 )}
+                {/* Group label for 3D section */}
+                {group.group === 'Simulaciones 3D' && (
+                  <li className="flex items-center px-1" role="presentation">
+                    <span className="text-xs font-semibold text-plum-400 px-1 whitespace-nowrap hidden lg:block">3D</span>
+                  </li>
+                )}
                 {group.tabs.map(tab => (
                   <li key={tab.id} role="presentation">
                     <button
@@ -107,7 +141,9 @@ export default function App() {
                       onClick={() => setActiveTab(tab.id)}
                       className={`px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-medium transition-all duration-150 border-b-2 whitespace-nowrap
                         ${activeTab === tab.id
-                          ? 'border-forest-600 text-forest-700'
+                          ? group.group === 'Simulaciones 3D'
+                            ? 'border-plum-500 text-plum-600'
+                            : 'border-forest-600 text-forest-700'
                           : 'border-transparent text-sage-400 hover:text-forest-600 hover:border-sage-300'
                         }`}
                     >
