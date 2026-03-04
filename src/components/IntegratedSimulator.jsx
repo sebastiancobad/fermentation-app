@@ -161,14 +161,16 @@ function solveBatch(p) {
   const { muMax, Ks, Yxs, S0, X0, tf } = p
   const dt = 0.1, steps = Math.ceil(tf / dt)
   let X = X0, S = S0, t = 0
-  const out = [{ t: 0, X, S, mu: monodMu(S, muMax, Ks), P: 0 }]
+  const out = [{ t: 0, X, S, mu: monodMu(S, muMax, Ks) }]
   for (let i = 1; i <= steps; i++) {
     const mu = monodMu(Math.max(0, S), muMax, Ks)
-    X = Math.max(0, X + dt * mu * X)
-    S = Math.max(0, S - dt * (mu * X) / Yxs)
+    const dX = dt * mu * X          // derivatives from old state
+    const dS = dt * mu * X / Yxs
+    X = Math.max(0, X + dX)
+    S = Math.max(0, S - dS)
     t += dt
-    if (i % 2 === 0)
-      out.push({ t: +t.toFixed(1), X: +X.toFixed(4), S: +S.toFixed(4), mu: +monodMu(S, muMax, Ks).toFixed(4), P: +(X * 1).toFixed(3) })
+    if (i % 2 === 0 || i === steps)
+      out.push({ t: +t.toFixed(1), X: +X.toFixed(4), S: +S.toFixed(4), mu: +monodMu(S, muMax, Ks).toFixed(4) })
   }
   return out
 }
@@ -176,19 +178,21 @@ function solveBatch(p) {
 function solveFedBatch(p) {
   const { muMax, Ks, Yxs, S0, X0, tf, F0, Sf, muSet } = p
   const dt = 0.1, steps = Math.ceil(tf / dt)
+  const Vmax = 10
   let X = X0, S = S0, V = 1.0, t = 0
-  const out = [{ t: 0, X, S, V, mu: monodMu(S, muMax, Ks), Prod: X * V }]
+  const out = [{ t: 0, X, S, V, mu: monodMu(S, muMax, Ks), Prod: +(X * V).toFixed(3) }]
   for (let i = 1; i <= steps; i++) {
     const mu = monodMu(Math.max(0, S), muMax, Ks)
-    const F = F0 * Math.exp(muSet * t)
-    const dXdt = mu * X - (F / V) * X
-    const dSdt = (F / V) * (Sf - S) - (mu * X) / Yxs
-    const dVdt = F
-    X = Math.max(0, X + dt * dXdt)
-    S = Math.max(0, S + dt * dSdt)
-    V = Math.min(V + dt * dVdt, 10)
+    const F = V < Vmax ? F0 * Math.exp(muSet * t) : 0  // stop feed when tank full
+    // compute all derivatives from old state before any update
+    const dX = dt * (mu * X - (F / V) * X)
+    const dS = dt * ((F / V) * (Sf - S) - (mu * X) / Yxs)
+    const dV = dt * F
+    X = Math.max(0, X + dX)
+    S = Math.max(0, S + dS)
+    V = Math.min(Vmax, V + dV)
     t += dt
-    if (i % 2 === 0)
+    if (i % 2 === 0 || i === steps)
       out.push({ t: +t.toFixed(1), X: +X.toFixed(4), S: +S.toFixed(4), V: +V.toFixed(3), mu: +monodMu(S, muMax, Ks).toFixed(4), Prod: +(X * V).toFixed(3) })
   }
   return out
@@ -201,10 +205,12 @@ function solveContinuous(p) {
   const out = [{ t: 0, X, S, mu: monodMu(S, muMax, Ks), D }]
   for (let i = 1; i <= steps; i++) {
     const mu = monodMu(Math.max(0, S), muMax, Ks)
-    X = Math.max(0, X + dt * ((mu - D) * X))
-    S = Math.max(0, S + dt * (D * (S0 - S) - (mu * X) / Yxs))
+    const dX = dt * (mu - D) * X          // derivatives from old state
+    const dS = dt * (D * (S0 - S) - mu * X / Yxs)
+    X = Math.max(0, X + dX)
+    S = Math.max(0, S + dS)
     t += dt
-    if (i % 2 === 0)
+    if (i % 2 === 0 || i === steps)
       out.push({ t: +t.toFixed(1), X: +X.toFixed(4), S: +S.toFixed(4), mu: +monodMu(S, muMax, Ks).toFixed(4), D })
   }
   return out
@@ -391,18 +397,31 @@ export default function IntegratedSimulator() {
   // Simulation params derived from selection
   const simParams = useMemo(() => {
     if (!kinetics || !substrate) return null
-    const base = {
-      muMax: kinetics.muMax,
-      Ks: kinetics.Ks,
-      Yxs: kinetics.Yxs,
-      S0: substrate.S0_default,
-      X0: org?.label === 'Células CHO' ? 0.05 : 0.1,
+    const X0 = orgKey === 'cho' ? 0.05 : 0.1
+    const base = { muMax: kinetics.muMax, Ks: kinetics.Ks, Yxs: kinetics.Yxs, S0: substrate.S0_default, X0 }
+
+    if (reactorKey === 'batch') {
+      // tf: 3× the theoretical time to exhaust substrate in exponential growth
+      const Xmax = X0 + kinetics.Yxs * substrate.S0_default
+      const tExhaust = Math.log(Math.max(2, Xmax / X0)) / kinetics.muMax
+      const tf = Math.min(200, Math.ceil(3 * tExhaust / 5) * 5)
+      return { ...base, tf }
     }
-    if (reactorKey === 'batch') return { ...base, tf: Math.min(120, Math.ceil(6 / kinetics.muMax) * 10) }
-    if (reactorKey === 'fedbatch') return { ...base, tf: Math.ceil(4 / kinetics.muMax) * 10, F0: 0.01, Sf: substrate.S0_default * 5, muSet: kinetics.muMax * 0.5 }
-    if (reactorKey === 'continuous') return { ...base, D: kinetics.muMax * 0.6, tf: Math.min(120, Math.ceil(6 / kinetics.muMax) * 10) }
+    if (reactorKey === 'fedbatch') {
+      const F0 = 0.01, muSet = kinetics.muMax * 0.5
+      // time to fill 10 L from 1 L with exponential feed, then 2 time constants of batch
+      const tFill = Math.log(1 + 9 * muSet / F0) / muSet
+      const tf = Math.min(300, Math.ceil((tFill + 2 / kinetics.muMax) / 10) * 10)
+      return { ...base, tf, F0, Sf: substrate.S0_default * 5, muSet }
+    }
+    if (reactorKey === 'continuous') {
+      const D = kinetics.muMax * 0.6
+      // tf: 8 residence times (1/D) to ensure approach to steady state
+      const tf = Math.min(200, Math.ceil(8 / D / 10) * 10)
+      return { ...base, D, tf }
+    }
     return null
-  }, [kinetics, substrate, reactorKey, org])
+  }, [kinetics, substrate, reactorKey, orgKey])
 
   const trajectory = useMemo(() => {
     if (!simParams) return []
@@ -737,10 +756,16 @@ export default function IntegratedSimulator() {
                     <YAxis tick={{ fontSize: 10, fill: '#879186' }} stroke="#D8DED4"
                       label={{ value: 'g/L', angle: -90, position: 'insideLeft', offset: 8, fontSize: 10, fill: '#879186' }} />
                     <Tooltip content={<CustomTooltip />} />
-                    {reactorKey === 'continuous' && simParams?.D && (
-                      <ReferenceLine x={finalPoint?.t} stroke="#94a3b8" strokeDasharray="4 4"
-                        label={{ value: 'Estado estac.', position: 'insideTopRight', fontSize: 9, fill: '#94a3b8' }} />
-                    )}
+                    {reactorKey === 'continuous' && simParams && (() => {
+                      const Sss = simParams.Ks * simParams.D / (simParams.muMax - simParams.D)
+                      const Xss = Math.max(0, simParams.Yxs * (simParams.S0 - Sss))
+                      return (<>
+                        <ReferenceLine y={+Xss.toFixed(3)} stroke={CHART_COLORS.X} strokeDasharray="5 3"
+                          label={{ value: `X_ss=${Xss.toFixed(2)}`, position: 'insideTopLeft', fontSize: 9, fill: CHART_COLORS.X }} />
+                        <ReferenceLine y={+Sss.toFixed(3)} stroke={CHART_COLORS.S} strokeDasharray="5 3"
+                          label={{ value: `S_ss=${Sss.toFixed(2)}`, position: 'insideBottomLeft', fontSize: 9, fill: CHART_COLORS.S }} />
+                      </>)
+                    })()}
                     <Line type="monotone" dataKey="X" stroke={CHART_COLORS.X} strokeWidth={2.5} dot={false} isAnimationActive={false} name="X (g/L)" />
                     <Line type="monotone" dataKey="S" stroke={CHART_COLORS.S} strokeWidth={2.5} dot={false} isAnimationActive={false} name="S (g/L)" />
                   </LineChart>
@@ -803,7 +828,8 @@ export default function IntegratedSimulator() {
                     {finalPoint && [
                       { label: 'X final', val: finalPoint.X.toFixed(2), unit: 'g/L', color: CHART_COLORS.X },
                       { label: 'S consumida', val: (simParams.S0 - finalPoint.S).toFixed(2), unit: 'g/L', color: CHART_COLORS.S },
-                      { label: 'Rend. obs.', val: finalPoint.S > 0.01 ? ((finalPoint.X - simParams.X0) / (simParams.S0 - finalPoint.S)).toFixed(3) : kinetics.Yxs.toFixed(3), unit: 'g/g', color: '#7B2D8E' },
+                      // Observed yield: ΔX/ΔS when substrate consumed; for fedbatch use concentration diff only (batch after fill)
+                      { label: 'Rend. obs.', val: (simParams.S0 - finalPoint.S) > 0.5 ? ((finalPoint.X - simParams.X0) / (simParams.S0 - finalPoint.S)).toFixed(3) : kinetics.Yxs.toFixed(3), unit: 'g/g', color: '#7B2D8E' },
                     ].map(m => (
                       <div key={m.label} className="rounded-lg p-3 text-center border border-sage-100 bg-sage-50">
                         <div className="text-xs text-sage-400 mb-1">{m.label}</div>
@@ -840,7 +866,7 @@ export default function IntegratedSimulator() {
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-sage-400 w-16">YX/S</span>
                   <div className="flex-1 bg-sage-100 rounded-full h-1.5">
-                    <div className="bg-navy-500 h-1.5 rounded-full" style={{ width: `${kinetics.Yxs / 0.7 * 100}%` }} />
+                    <div className="bg-navy-500 h-1.5 rounded-full" style={{ width: `${Math.min(kinetics.Yxs / 0.7 * 100, 100)}%` }} />
                   </div>
                   <span className="font-mono text-xs font-bold text-navy-700 w-16 text-right">{kinetics.Yxs} g/g</span>
                 </div>
