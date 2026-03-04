@@ -126,7 +126,7 @@ function ScaleBubbles({ active, count }) {
 
 function ScaleImpeller({ active, rpm }) {
   const ref = useRef()
-  useFrame(() => { if (ref.current) ref.current.rotation.y += (rpm / 60) * 0.08 })
+  useFrame(() => { if (!active || !ref.current) return; ref.current.rotation.y += (rpm / 60) * 0.08 })
   return (
     <group ref={ref}>
       <mesh><cylinderGeometry args={[0.03, 0.03, 2.8, 8]} /><meshStandardMaterial color="#666" /></mesh>
