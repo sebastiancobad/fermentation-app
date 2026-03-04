@@ -174,12 +174,13 @@ export default function ContinuousSimulator() {
   const [playing, setPlaying] = useState(false)
   const [tIdx, setTIdx] = useState(0)
 
+  const reset = useCallback(() => { setPlaying(false); setTIdx(0) }, [])
   const set = k => v => { setParams(p => ({ ...p, [k]: v })); reset() }
   const trajectory = useMemo(() => solveContinuous(params), [params])
   const ssCurve = useMemo(() => steadyStateCurve(params), [params])
   const current = trajectory[Math.min(tIdx, trajectory.length - 1)] || trajectory[0]
   const isWashout = params.D >= params.muMax * 0.95
-  const Sss = params.Ks * params.D / (params.muMax - params.D)
+  const Sss = !isWashout ? params.Ks * params.D / (params.muMax - params.D) : params.S0
   const Xss = Sss < params.S0 && !isWashout ? params.Yxs * (params.S0 - Sss) : 0
   const chartData = trajectory.slice(0, tIdx + 1)
   const maxX = useMemo(() => Math.max(...trajectory.map(d => d.X), 0.01), [trajectory])
@@ -191,8 +192,6 @@ export default function ContinuousSimulator() {
     }, 100)
     return () => clearInterval(id)
   }, [playing, speed, trajectory.length])
-
-  const reset = useCallback(() => { setPlaying(false); setTIdx(0) }, [])
 
   return (
     <div className="space-y-6">

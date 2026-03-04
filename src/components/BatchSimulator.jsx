@@ -201,6 +201,8 @@ export default function BatchSimulator() {
   const chartData = trajectory.slice(0, tIdx + 1)
   const phases = useMemo(() => detectPhases(trajectory, params.muMax), [trajectory, params.muMax])
 
+  const reset = useCallback(() => { setPlaying(false); setTIdx(0) }, [])
+
   const applyPreset = useCallback((key) => {
     const { label, desc, ...p } = PRESETS[key]
     reset()
@@ -217,8 +219,6 @@ export default function BatchSimulator() {
     }, 100)
     return () => clearInterval(id)
   }, [playing, speed, trajectory.length])
-
-  const reset = useCallback(() => { setPlaying(false); setTIdx(0) }, [])
   const exportCSV = () => {
     const rows = ['t,X,S,mu', ...trajectory.map(d => `${d.t},${d.X},${d.S},${d.mu}`)].join('\n')
     const a = document.createElement('a'); a.href = 'data:text/csv,' + encodeURIComponent(rows)

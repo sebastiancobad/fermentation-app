@@ -1,4 +1,27 @@
-import { useState } from 'react'
+import { useState, Component } from 'react'
+
+class TabErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { error: null } }
+  static getDerivedStateFromError(error) { return { error } }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 text-center px-6">
+          <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center text-2xl">⚠</div>
+          <div>
+            <h2 className="text-lg font-semibold text-forest-900 mb-1">Error al cargar este módulo</h2>
+            <p className="text-sm text-sage-500 mb-3 max-w-md">{this.state.error.message}</p>
+            <button onClick={() => this.setState({ error: null })}
+              className="px-4 py-2 bg-forest-600 text-white text-sm rounded-lg hover:bg-forest-700 transition-colors">
+              Reintentar
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 import Dashboard from './components/Dashboard'
 import GrowthCurve from './components/GrowthCurve'
 import KineticCalculator from './components/KineticCalculator'
@@ -12,6 +35,7 @@ import FedBatchSimulator from './components/FedBatchSimulator'
 import ContinuousSimulator from './components/ContinuousSimulator'
 import PHControlSimulator from './components/PHControlSimulator'
 import OxygenScalingSimulator from './components/OxygenScalingSimulator'
+import IntegratedSimulator from './components/IntegratedSimulator'
 
 const TAB_GROUPS = [
   {
@@ -32,6 +56,7 @@ const TAB_GROUPS = [
   {
     group: 'Simulaciones 3D',
     tabs: [
+      { id: 'sim-integrated', label: 'Diseño Integrado',    short: 'Integrado' },
       { id: 'sim-batch',    label: 'Batch (Monod)',         short: 'Batch'   },
       { id: 'sim-fedbatch', label: 'Fed-Batch',             short: 'F-Batch' },
       { id: 'sim-cont',     label: 'Continuo',              short: 'Cont.'   },
@@ -62,6 +87,7 @@ const COMPONENTS = {
   calculator:   <KineticCalculator />,
   monod:        <MonodSimulator />,
   bioreactor:   <BioreactorModule />,
+  'sim-integrated': <IntegratedSimulator />,
   'sim-batch':    <BatchSimulator />,
   'sim-fedbatch': <FedBatchSimulator />,
   'sim-cont':     <ContinuousSimulator />,
@@ -160,7 +186,7 @@ export default function App() {
 
       {/* ─── Main Content ─── */}
       <main id="main-content" className="max-w-7xl mx-auto px-4 py-8">
-        {COMPONENTS[activeTab]}
+        <TabErrorBoundary key={activeTab}>{COMPONENTS[activeTab]}</TabErrorBoundary>
 
         {/* ─── Sequential Navigation ─── */}
         <div className="flex items-center justify-between mt-12 pt-6 border-t border-sage-200">
