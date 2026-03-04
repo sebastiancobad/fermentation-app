@@ -13,15 +13,15 @@ const SCALES = [
   { label: 'Indust.',V: 10000, D: 1.60 },
 ]
 
-// Geometry helpers
+// Geometry helpers — V in liters, returns D, H in meters
 function reactorGeometry(V) {
   // Aspect ratio H/D = 2.5 for STR
-  // V = π(D/2)²·H = π(D/2)²·2.5D = π·2.5·D³/4
-  // D³ = 4V/(π·2.5) → D = cbrt(4V/(π·2.5))
-  const D = Math.cbrt(4 * V / (Math.PI * 2.5))
+  // V [m³] = π(D/2)²·H = π·2.5·D³/4  → D = cbrt(4·V_m3/(π·2.5))
+  const V_m3 = V / 1000
+  const D = Math.cbrt(4 * V_m3 / (Math.PI * 2.5))
   const H = 2.5 * D
   const A = Math.PI * (D / 2) ** 2
-  return { D, H, A }
+  return { D, H, A, V_m3 }
 }
 
 function impellerD(vesselD) { return vesselD * 0.4 } // D_imp = 0.4·D_vessel
@@ -29,7 +29,7 @@ function impellerD(vesselD) { return vesselD * 0.4 } // D_imp = 0.4·D_vessel
 function calculateScale(V, criterion, globalParams) {
   const { OUR, vvmBase, Cstar } = globalParams
   const geom = reactorGeometry(V)
-  const { D, H, A } = geom
+  const { D, H, A, V_m3 } = geom
   const Di = impellerD(D)
   const refV = SCALES[0].V
   const refGeom = reactorGeometry(refV)
@@ -39,60 +39,63 @@ function calculateScale(V, criterion, globalParams) {
 
   switch (criterion) {
     case 'PV': {
-      // Constant P/V = 2 kW/m³ across scales
-      PperV = 2000 // W/m³
-      // P ∝ ρ·N³·Di⁵ → N = cbrt(P/(ρ·Di⁵))
-      // Using Np ≈ 5 (Rushton), P = Np·ρ·N³·Di⁵
-      const Np = 5, rho = 1000
-      const N3 = PperV * (V / 1000) / (Np * rho * Di ** 5)
-      rpm = Math.cbrt(N3) * 60
+      // P/V = 2 kW/m³ = 2000 W/m³ constante en todas las escalas
+      // P = Np·ρ·N³·Di⁵  →  N = cbrt(PperV·V_m3 / (Np·ρ·Di⁵))
+      PperV = 2000
+      const Np1 = 5, rho1 = 1000
+      rpm = Math.cbrt(PperV * V_m3 / (Np1 * rho1 * Di ** 5)) * 60
       break
     }
     case 'tip': {
-      // Constant tip speed u_tip = π·Di·N/60 = const
+      // Tip speed = π·Di·N/60 constante (igual al lab)
       const refDi = impellerD(refGeom.D)
-      const refTip = Math.PI * refDi * refRPM / 60
+      const refTip = Math.PI * refDi * refRPM / 60   // m/s en escala lab
       rpm = refTip * 60 / (Math.PI * Di)
-      const Np = 5, rho = 1000
-      const N_rps = rpm / 60
-      PperV = Np * rho * N_rps ** 3 * Di ** 5 / (V / 1000) // W/m³
+      const Np2 = 5, rho2 = 1000
+      PperV = Np2 * rho2 * (rpm/60) ** 3 * Di ** 5 / V_m3
       break
     }
     case 'kLa': {
-      // kLa = 0.002·rpm^0.7·vvm^0.4, target kLa from lab scale
-      const refKla = 0.002 * refRPM ** 0.7 * vvmBase ** 0.4
-      // Solve: refKla = 0.002·N^0.7·vvm^0.4 → N = (refKla/(0.002·vvm^0.4))^(1/0.7)
-      rpm = (refKla / (0.002 * vvmBase ** 0.4)) ** (1 / 0.7)
-      const Np = 5, rho = 1000
-      const N_rps = rpm / 60
-      PperV = Np * rho * N_rps ** 3 * Di ** 5 / (V / 1000)
+      // kLa [h⁻¹] = 1.0·N^0.7·vvm^0.4  →  mantener kLa_lab
+      const refKla = 1.0 * refRPM ** 0.7 * vvmBase ** 0.4
+      rpm = (refKla / (1.0 * vvmBase ** 0.4)) ** (1 / 0.7)
+      const Np3 = 5, rho3 = 1000
+      PperV = Np3 * rho3 * (rpm/60) ** 3 * Di ** 5 / V_m3
       break
     }
     case 'tmix': {
-      // Constant mixing time τ_mix ∝ (V/P)^(1/3), τ_mix = 15s
-      // τ_mix ≈ 5.9·(V/P)^(0.33) → P/V = (5.9/τmix)^3·V^0
-      // Simplified: P/V scales to maintain τ_mix
-      const refTmix = 15
-      const Np = 5, rho = 1000
-      // τ_mix ≈ 5·N^(-1)·(D/Di)^2 → N = 5/(τ_mix)·(D/Di)^2
-      rpm = 5 / refTmix * (D / Di) ** 2 * 60
-      const N_rps = rpm / 60
-      PperV = Np * rho * N_rps ** 3 * Di ** 5 / (V / 1000)
+      // τ_mix = C·(D/Di)²/N  →  N constante para D/Di constante = 1/0.4
+      // Nienow: τ_mix·N·(Di/D_t)² = 5  →  N = 5/( τ_mix·(Di/D_t)² )
+      const refTmix = 15   // s
+      const N_rps4 = 5 / (refTmix * (Di / D) ** 2)
+      rpm = N_rps4 * 60
+      const Np4 = 5, rho4 = 1000
+      PperV = Np4 * rho4 * N_rps4 ** 3 * Di ** 5 / V_m3
       break
     }
-    default: rpm = 200; PperV = 2000
+    default: rpm = refRPM; PperV = 2000
   }
 
   rpm = Math.round(Math.max(5, rpm))
   const vvm = vvmBase
-  const kLa = Math.max(1, 0.002 * rpm ** 0.7 * vvm ** 0.4)
-  const OTR = kLa * (Cstar - 0.5 * Cstar) // assume C = 0.5·C* at steady state mmol/L·h ≈ using mg → rough
-  const tipSpeed = Math.PI * Di * rpm / 60
-  const P = (PperV * V) / 1000 // kW
-  const tauMix = 5 * 60 / rpm * (D / Di) ** 2 // seconds
-  const pO2 = OTR > OUR ? 65 : Math.max(5, 40 - (OUR - OTR) * 5)
+  // kLa [h⁻¹] — correlación empírica tipo Pirt-Cooper
+  const kLa = Math.max(0.5, 1.0 * rpm ** 0.7 * vvm ** 0.4)
+  // OTR = kLa · (C* − C)  [mmol/L/h];  Cstar en mg/L → /32 → mmol/L
+  const Csat_mmol = Cstar / 32      // O2: MM = 32 g/mol
+  // pO2 al estado estacionario: kLa·(Csat−C) = OUR → C = Csat − OUR/kLa
+  const C_ss = Math.max(0, Csat_mmol - OUR / kLa)
+  const pO2 = Math.min(100, +(C_ss / Csat_mmol * 100).toFixed(0))
+  const OTR = kLa * (Csat_mmol - C_ss)  // mmol/L/h
+  const tipSpeed = Math.PI * Di * rpm / 60          // m/s
+  const P = (PperV * V_m3) / 1000                   // kW
+  // τ_mix = 5·(D/Di)²/N  [s]  (Nienow correlation)
+  const tauMix = 5 * (D / Di) ** 2 / (rpm / 60)     // seconds
 
-  return { V, label: SCALES.find(s => s.V === V)?.label ?? V + 'L', D: +D.toFixed(2), H: +H.toFixed(2), Di: +Di.toFixed(2), rpm, kLa: +kLa.toFixed(1), P: +P.toFixed(2), PperV: +PperV.toFixed(0), tipSpeed: +tipSpeed.toFixed(2), tauMix: +tauMix.toFixed(1), pO2: +pO2.toFixed(0) }
+  return { V, label: SCALES.find(s => s.V === V)?.label ?? V + 'L',
+    D: +D.toFixed(3), H: +H.toFixed(2), Di: +Di.toFixed(3), rpm,
+    kLa: +kLa.toFixed(1), P: +P.toFixed(3), PperV: +PperV.toFixed(0),
+    tipSpeed: +tipSpeed.toFixed(2), tauMix: +tauMix.toFixed(1),
+    pO2, OTR: +OTR.toFixed(1) }
 }
 
 // ─── Single 3D Reactor ────────────────────────────────────────────────────────
@@ -187,7 +190,7 @@ export default function OxygenScalingSimulator() {
   const set = k => v => setGlobalParams(p => ({ ...p, [k]: v }))
   const results = useMemo(() => SCALES.map(s => calculateScale(s.V, criterion, globalParams)), [criterion, globalParams])
 
-  const barData = results.map(r => ({ label: r.label, 'RPM': r.rpm, 'kLa (h⁻¹)': r.kLa, 'P (kW)': r.P, 'τ_mix (s)': r.tauMix }))
+  const barData = results.map(r => ({ label: r.label, 'RPM': r.rpm, 'kLa (h⁻¹)': r.kLa, 'P (kW)': +r.P.toFixed(2), 'τ_mix (s)': r.tauMix }))
 
   const pO2Color = (pO2) => pO2 > 40 ? '#22c55e' : pO2 > 20 ? '#f59e0b' : '#ef4444'
 
@@ -256,14 +259,15 @@ export default function OxygenScalingSimulator() {
 
       {/* Comparison table */}
       <div className="bg-white rounded-xl border border-sage-200 overflow-hidden">
-        <div className="p-4 border-b border-sage-100">
+        <div className="p-4 border-b border-sage-100 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-forest-900">Tabla Comparativa de Escalado</h3>
+          <span className="text-xs text-sage-400">OUR = {globalParams.OUR} mmol/L/h · C* = {globalParams.Cstar} mg/L</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead className="bg-sage-50">
               <tr>
-                {['Escala', 'V (L)', 'D (m)', 'H (m)', 'RPM', 'kLa (h⁻¹)', 'P (kW)', 'P/V (W/m³)', 'Tip (m/s)', 'τ_mix (s)', 'pO₂ (%)'].map(h => (
+                {['Escala', 'V (L)', 'D (m)', 'H (m)', 'RPM', 'kLa (h⁻¹)', 'P (kW)', 'P/V (W/m³)', 'Tip (m/s)', 'τ_mix (s)', 'OTR (mmol/L/h)', 'pO₂ (%)'].map(h => (
                   <th key={h} className="px-3 py-2 text-left text-sage-500 font-semibold whitespace-nowrap">{h}</th>
                 ))}
               </tr>
@@ -281,6 +285,9 @@ export default function OxygenScalingSimulator() {
                   <td className="px-3 py-2 font-mono">{r.PperV}</td>
                   <td className="px-3 py-2 font-mono">{r.tipSpeed}</td>
                   <td className="px-3 py-2 font-mono">{r.tauMix}</td>
+                  <td className={`px-3 py-2 font-mono font-bold ${r.OTR >= globalParams.OUR ? 'text-green-600' : 'text-red-500'}`}>
+                    {r.OTR} {r.OTR < globalParams.OUR ? '⚠' : '✓'}
+                  </td>
                   <td className="px-3 py-2 font-mono font-bold" style={{ color: pO2Color(r.pO2) }}>{r.pO2}%</td>
                 </tr>
               ))}
@@ -292,10 +299,10 @@ export default function OxygenScalingSimulator() {
       {/* Comparative bar charts */}
       <div className="grid md:grid-cols-2 gap-4">
         {[
-          { key: 'RPM', label: 'RPM por escala', color: '#1B4965' },
-          { key: 'kLa (h⁻¹)', label: 'kLa por escala (h⁻¹)', color: '#2D6A4F' },
-          { key: 'P (kW)', label: 'Potencia por escala (kW)', color: '#7B2D8E' },
-          { key: 'τ_mix (s)', label: 'Tiempo de mezcla (s)', color: '#D4A017' },
+          { key: 'RPM',      label: 'RPM por escala',              color: '#1B4965' },
+          { key: 'kLa (h⁻¹)', label: 'kLa por escala (h⁻¹)',     color: '#2D6A4F' },
+          { key: 'P (kW)',   label: 'Potencia total por escala (kW)', color: '#7B2D8E' },
+          { key: 'τ_mix (s)', label: 'Tiempo de mezcla (s)',       color: '#D4A017' },
         ].map(ch => (
           <div key={ch.key} className="bg-white rounded-xl border border-sage-200 p-4">
             <div className="text-xs font-semibold text-sage-500 mb-2">{ch.label}</div>
@@ -312,17 +319,48 @@ export default function OxygenScalingSimulator() {
         ))}
       </div>
 
-      {/* Legend */}
-      <div className="bg-white rounded-xl border border-sage-200 p-4">
-        <h3 className="text-sm font-semibold text-forest-900 mb-2">Interpretación del Color del Líquido</h3>
-        <div className="flex gap-6 text-xs">
-          <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-green-500" /><span>pO₂ &gt; 40% — Buena oxigenación</span></div>
-          <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-amber-400" /><span>pO₂ 20–40% — Limitación moderada</span></div>
-          <div className="flex items-center gap-2"><div className="w-4 h-4 rounded bg-red-500" /><span>pO₂ &lt; 20% — Hipoxia crítica</span></div>
+      {/* Equations + Legend */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl border border-sage-200 p-4">
+          <h3 className="font-serif font-bold text-forest-900 text-sm mb-3">Ecuaciones de Escalado</h3>
+          <div className="space-y-2 text-xs font-mono">
+            {[
+              { label: 'Potencia (Rushton)',      eq: 'P = Np · ρ · N³ · Di⁵',       color: '#7B2D8E', note: 'Np ≈ 5, ρ = 1000 kg/m³' },
+              { label: 'Tip speed',               eq: 'u_tip = π · Di · N / 60',      color: '#1B4965', note: 'm/s — N en RPM' },
+              { label: 'kLa (empírica)',           eq: 'kLa = 1.0 · N⁰·⁷ · vvm⁰·⁴',  color: '#2D6A4F', note: 'h⁻¹ — Cooper-Pirt' },
+              { label: 'τ_mezcla (Nienow)',        eq: 'τ = 5·(D/Di)² / N',           color: '#D4A017', note: 'N en rps' },
+              { label: 'pO₂ estado estacionario', eq: 'C_ss = C* − OUR / kLa',        color: '#ef4444', note: 'C* = Cstar/32 [mmol/L]' },
+            ].map(e => (
+              <div key={e.label} className="bg-warm-code rounded-lg p-2 border border-sage-100">
+                <div className="text-sage-400 text-xs mb-0.5">{e.label}</div>
+                <div className="font-bold" style={{ color: e.color }}>{e.eq}</div>
+                <div className="text-sage-400 text-xs">{e.note}</div>
+              </div>
+            ))}
+          </div>
         </div>
-        <p className="text-xs text-sage-400 mt-2">
-          kLa calculado con: kLa = 0.002 · RPM⁰·⁷ · vvm⁰·⁴ (correlación empírica de Pirt, 1975)
-        </p>
+        <div className="bg-white rounded-xl border border-sage-200 p-4">
+          <h3 className="font-serif font-bold text-forest-900 text-sm mb-3">Interpretación Visual</h3>
+          <div className="space-y-2 text-xs mb-3">
+            <div className="flex items-center gap-2 p-2 bg-green-50 rounded-lg border border-green-200">
+              <div className="w-4 h-4 rounded bg-green-500 flex-shrink-0" />
+              <span><strong>pO₂ &gt; 40%</strong> — Transferencia de O₂ adecuada (OTR &gt; OUR)</span>
+            </div>
+            <div className="flex items-center gap-2 p-2 bg-amber-50 rounded-lg border border-amber-200">
+              <div className="w-4 h-4 rounded bg-amber-400 flex-shrink-0" />
+              <span><strong>pO₂ 20–40%</strong> — Limitación moderada (OTR ≈ OUR)</span>
+            </div>
+            <div className="flex items-center gap-2 p-2 bg-red-50 rounded-lg border border-red-200">
+              <div className="w-4 h-4 rounded bg-red-500 flex-shrink-0" />
+              <span><strong>pO₂ &lt; 20%</strong> — Hipoxia crítica (OTR &lt;&lt; OUR)</span>
+            </div>
+          </div>
+          <div className="bg-warm-code rounded-lg p-3 border border-sage-100 text-xs text-sage-600">
+            <p className="font-semibold text-forest-700 mb-1">Geometría del reactor (H/D = 2.5):</p>
+            <p className="font-mono">D = ∛(4·V / (π·2.5))  →  Di = 0.4·D</p>
+            <p className="mt-1">Referencias: Nienow (1997), van't Riet (1979), Bailey & Ollis (1986)</p>
+          </div>
+        </div>
       </div>
     </div>
   )

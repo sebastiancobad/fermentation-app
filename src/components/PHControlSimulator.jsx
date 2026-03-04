@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine, ReferenceArea, BarChart, Bar } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine, ReferenceArea, BarChart, Bar, Cell } from 'recharts'
 import { SectionHeader } from './Dashboard'
 
 // ─── PID + pH Model ──────────────────────────────────────────────────────────
@@ -282,15 +282,26 @@ export default function PHControlSimulator() {
               </ResponsiveContainer>
             </div>
             <div>
-              <div className="text-xs text-sage-400 mb-1">Acción de control u(t) — Azul: base, Rojo: ácido</div>
-              <ResponsiveContainer width="100%" height={80}>
+              <div className="text-xs text-sage-400 mb-1 flex items-center gap-3">
+                Acción de control u(t)
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-blue-500 inline-block" /> Base (+)</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-red-500 inline-block" /> Ácido (−)</span>
+              </div>
+              <ResponsiveContainer width="100%" height={90}>
                 <BarChart data={history} margin={{ top: 2, right: 10, bottom: 0, left: -20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#D8DED4" />
                   <XAxis dataKey="t" tick={{ fontSize: 9 }} stroke="#879186" />
                   <YAxis tick={{ fontSize: 9 }} stroke="#879186" />
-                  <Tooltip contentStyle={{ fontSize: 11 }} />
-                  <ReferenceLine y={0} stroke="#ccc" />
-                  <Bar dataKey="u" fill="#3b82f6" isAnimationActive={false} />
+                  <Tooltip
+                    contentStyle={{ fontSize: 11 }}
+                    formatter={(val) => [val.toFixed(3), val >= 0 ? 'Base añadida' : 'Ácido añadido']}
+                  />
+                  <ReferenceLine y={0} stroke="#aaa" />
+                  <Bar dataKey="u" isAnimationActive={false} maxBarSize={8}>
+                    {history.map((entry, i) => (
+                      <Cell key={i} fill={entry.u >= 0 ? '#3b82f6' : '#ef4444'} />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>

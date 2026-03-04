@@ -28,7 +28,7 @@ function solveContinuous(p) {
   return out
 }
 
-// Steady-state curve: D vs X_ss and S_ss
+// Steady-state curve: D vs X_ss and S_ss (includes washout extension)
 function steadyStateCurve(p) {
   const { muMax, Ks, Yxs, S0 } = p
   const pts = []
@@ -37,7 +37,9 @@ function steadyStateCurve(p) {
     const Xss = Sss < S0 ? Yxs * (S0 - Sss) : 0
     pts.push({ D: +D.toFixed(3), Xss: +Math.max(0, Xss).toFixed(3), Sss: +Math.min(S0, Sss).toFixed(3) })
   }
+  // Washout boundary + extension
   pts.push({ D: +muMax.toFixed(3), Xss: 0, Sss: +S0.toFixed(3) })
+  pts.push({ D: +(muMax * 1.25).toFixed(3), Xss: 0, Sss: +S0.toFixed(3) })
   return pts
 }
 
@@ -282,16 +284,26 @@ export default function ContinuousSimulator() {
             </div>
             {/* D vs X_ss theory */}
             <div>
-              <div className="text-xs text-sage-400 mb-1">Diagrama teórico D vs X_ss / S_ss</div>
-              <ResponsiveContainer width="100%" height={90}>
-                <LineChart data={ssCurve} margin={{ top: 2, right: 10, bottom: 0, left: -20 }}>
+              <div className="text-xs mb-1 flex items-center gap-2">
+                <span className="font-medium text-sage-600">Diagrama D vs X_ss / S_ss</span>
+                <span className="px-1.5 py-0.5 rounded text-xs bg-red-100 text-red-500 font-medium">Zona roja = Washout (D &gt; µmax)</span>
+              </div>
+              <ResponsiveContainer width="100%" height={120}>
+                <LineChart data={ssCurve} margin={{ top: 4, right: 10, bottom: 0, left: -20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#D8DED4" />
-                  <XAxis dataKey="D" tick={{ fontSize: 9 }} stroke="#879186" label={{ value: 'D (h⁻¹)', fontSize: 9, position: 'insideRight', offset: -5 }} />
+                  {/* Washout zone shading */}
+                  <ReferenceArea x1={params.muMax} x2={params.muMax * 1.25} fill="#ef4444" fillOpacity={0.12}
+                    label={{ value: 'WASHOUT', position: 'insideTop', fontSize: 8, fill: '#ef4444' }} />
+                  <XAxis dataKey="D" tick={{ fontSize: 9 }} stroke="#879186"
+                    label={{ value: 'D (h⁻¹)', position: 'insideRight', offset: -5, fontSize: 9, fill: '#879186' }} />
                   <YAxis tick={{ fontSize: 9 }} stroke="#879186" />
                   <Tooltip contentStyle={{ fontSize: 11 }} />
-                  <ReferenceLine x={params.D} stroke={isWashout ? '#ef4444' : '#1B4965'} strokeDasharray="3 3" label={{ value: 'D actual', fontSize: 8, fill: '#1B4965' }} />
-                  <Line type="monotone" dataKey="Xss" stroke="#2D6A4F" strokeWidth={2} dot={false} name="X_ss" isAnimationActive={false} />
-                  <Line type="monotone" dataKey="Sss" stroke="#D4A017" strokeWidth={2} dot={false} name="S_ss" isAnimationActive={false} />
+                  <ReferenceLine x={params.muMax} stroke="#ef4444" strokeWidth={1.5}
+                    label={{ value: 'D_crit', position: 'insideTopLeft', fontSize: 8, fill: '#ef4444' }} />
+                  <ReferenceLine x={params.D} stroke={isWashout ? '#ef4444' : '#1B4965'} strokeDasharray="3 3"
+                    label={{ value: 'D actual', fontSize: 8, fill: isWashout ? '#ef4444' : '#1B4965' }} />
+                  <Line type="monotone" dataKey="Xss" stroke="#2D6A4F" strokeWidth={2.5} dot={false} name="X_ss (g/L)" isAnimationActive={false} />
+                  <Line type="monotone" dataKey="Sss" stroke="#D4A017" strokeWidth={2.5} dot={false} name="S_ss (g/L)" isAnimationActive={false} />
                   <Legend wrapperStyle={{ fontSize: 10 }} />
                 </LineChart>
               </ResponsiveContainer>

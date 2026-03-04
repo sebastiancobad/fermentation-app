@@ -25,16 +25,18 @@ function feedRate(t, strategy, p) {
 function solveFedBatch(p, strategy) {
   const dt = 0.1, steps = Math.ceil(p.tf / dt)
   let y = [p.X0, p.S0, p.V0], t = 0
+  let lastMu = monodMu(p.S0, p.muMax, p.Ks)
   const out = [{
     t: 0, X: p.X0, S: p.S0, V: p.V0,
-    F: feedRate(0, strategy, p),
-    P: p.X0 * p.V0,
+    F: feedRate(0, strategy, { ...p, _lastMu: lastMu }),
+    Prod: p.X0 * p.V0,   // Productividad = X·V (g de biomasa total)
   }]
   for (let i = 1; i <= steps; i++) {
     const [X, S, V] = y
     const mu = monodMu(S, p.muMax, p.Ks)
-    p._lastMu = mu
-    const F = feedRate(t, strategy, p)
+    const pState = { ...p, _lastMu: mu }
+    const F = feedRate(t, strategy, pState)
+    lastMu = mu
     const dXdt = mu * X - (F / V) * X
     const dSdt = -mu * X / p.Yxs + F * p.Sfeed / V - (F / V) * S
     const dVdt = F
@@ -45,8 +47,12 @@ function solveFedBatch(p, strategy) {
     ]
     t += dt
     if (i % 2 === 0) {
-      const newF = feedRate(t, strategy, p)
-      out.push({ t: +t.toFixed(1), X: +y[0].toFixed(3), S: +y[1].toFixed(3), V: +y[2].toFixed(3), F: +newF.toFixed(4), P: +(y[0] * y[2]).toFixed(3) })
+      const newF = feedRate(t, strategy, { ...p, _lastMu: lastMu })
+      out.push({
+        t: +t.toFixed(1), X: +y[0].toFixed(3), S: +y[1].toFixed(3),
+        V: +y[2].toFixed(3), F: +newF.toFixed(4),
+        Prod: +(y[0] * y[2]).toFixed(3),   // g de biomasa total en el reactor
+      })
     }
   }
   return out
@@ -202,7 +208,7 @@ export default function FedBatchSimulator() {
 
   const reset = useCallback(() => { setPlaying(false); setTIdx(0) }, [])
   const exportCSV = () => {
-    const rows = ['t,X,S,V,F,P', ...trajectory.map(d => `${d.t},${d.X},${d.S},${d.V},${d.F},${d.P}`)].join('\n')
+    const rows = ['t,X,S,V,F,Prod', ...trajectory.map(d => `${d.t},${d.X},${d.S},${d.V},${d.F},${d.Prod}`)].join('\n')
     const a = document.createElement('a'); a.href = 'data:text/csv,' + encodeURIComponent(rows)
     a.download = 'fedbatch_sim.csv'; a.click()
   }
@@ -291,14 +297,14 @@ export default function FedBatchSimulator() {
             <h3 className="text-sm font-semibold text-forest-900">Evolución del Proceso</h3>
             {[
               { key1: 'X', name1: 'X (g/L)', c1: '#2D6A4F', key2: 'S', name2: 'S (g/L)', c2: '#D4A017', title: 'Biomasa & Sustrato' },
-              { key1: 'V', name1: 'V (L)', c1: '#1B4965', key2: 'F', name2: 'F (L/h)', c2: '#ef4444', title: 'Volumen & Caudal' },
+              { key1: 'V', name1: 'V (L)', c1: '#1B4965', key2: 'F', name2: 'F (L/h)', c2: '#ef4444', title: 'Volumen & Caudal de alimentación' },
             ].map(ch => (
               <div key={ch.title}>
-                <div className="text-xs text-sage-400 mb-1">{ch.title}</div>
+                <div className="text-xs text-sage-400 mb-1 font-medium">{ch.title}</div>
                 <ResponsiveContainer width="100%" height={90}>
                   <LineChart data={chartData} margin={{ top: 2, right: 10, bottom: 0, left: -20 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#D8DED4" />
-                    <XAxis dataKey="t" tick={{ fontSize: 9 }} stroke="#879186" />
+                    <XAxis dataKey="t" tick={{ fontSize: 9 }} stroke="#879186" label={{ value: 'h', position: 'insideRight', offset: -5, fontSize: 9, fill: '#879186' }} />
                     <YAxis tick={{ fontSize: 9 }} stroke="#879186" />
                     <Tooltip contentStyle={{ fontSize: 11 }} />
                     <Line type="monotone" dataKey={ch.key1} name={ch.name1} stroke={ch.c1} strokeWidth={2} dot={false} isAnimationActive={false} />
@@ -308,6 +314,21 @@ export default function FedBatchSimulator() {
                 </ResponsiveContainer>
               </div>
             ))}
+            {/* Productivity chart */}
+            <div>
+              <div className="text-xs mb-1 font-medium" style={{ color: '#7B2D8E' }}>
+                Productividad total — X·V (g biomasa en reactor)
+              </div>
+              <ResponsiveContainer width="100%" height={90}>
+                <LineChart data={chartData} margin={{ top: 2, right: 10, bottom: 0, left: -20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#D8DED4" />
+                  <XAxis dataKey="t" tick={{ fontSize: 9 }} stroke="#879186" label={{ value: 'h', position: 'insideRight', offset: -5, fontSize: 9, fill: '#879186' }} />
+                  <YAxis tick={{ fontSize: 9 }} stroke="#879186" />
+                  <Tooltip contentStyle={{ fontSize: 11 }} formatter={(v) => [`${v} g`, 'X·V']} />
+                  <Line type="monotone" dataKey="Prod" name="X·V (g)" stroke="#7B2D8E" strokeWidth={2.5} dot={false} isAnimationActive={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
